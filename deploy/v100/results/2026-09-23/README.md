@@ -127,3 +127,56 @@ and verdicts. Full raw responses remain in the local campaign receipts. Offline
 rescoring with the final stricter checker changed no production-suite verdicts.
 The helper's HTTP-only test confirms that Markdown/prose around required bare JSON,
 output exhaustion, and a failing program that prints `TESTOK` cannot produce a pass.
+
+## Cold long context with Vision
+
+The corrected production profile completed one cold **226022-input-token** request
+containing three scattered facts and an OCR image. All four requested values were
+recovered correctly; the stream ended with `stop` and `[DONE]`, without truncation
+or OOM. This qualifies the large-context retrieval/OCR scenario, not every possible
+reasoning task at that length.
+
+| Metric | Result |
+|---|---:|
+| Cached input tokens | 0 |
+| First generated token, including thinking | 577.94 s |
+| First final-answer token | 599.37 s |
+| Whole request | 604.43 s |
+| Engine prefill throughput | 391.5 tok/s |
+| Engine decode throughput | 39.5 tok/s |
+| Completion / reasoning tokens | 1045 / 798 |
+| Accepted speculative tokens | 792 / 1106 (71.6%) |
+
+The historical llama.cpp text-only probe took 1105 s; this new probe includes an
+image and uses Medium instead of the historical effort/output path. These are useful
+user-facing timings but are not an isolated engine-only speedup experiment.
+See [acceptance.json](acceptance.json) for the compact acceptance receipts.
+
+## Serving and OpenCode acceptance
+
+- Invalid thinking budgets (zero, negative, Boolean, fractional, uint32 overflow)
+  receive HTTP 400. A 16-token budget exercised canonical thinking closure; the
+  short arithmetic answer was correct and finished normally. Control-close tokens
+  also consume output: the observed thinking count was 40, not 16. An earlier
+  verbose-answer probe correctly exhausted its separate 1024 output ceiling;
+  bounding thinking does not promise that every final answer fits.
+- Production `ninfer-v100.service` started and survived a controlled service restart.
+  Health reported `qwen-v100`, context262144, and exactly one GPU process belonging
+  to the unit. The model volume has a persistent mount and the unit requires it.
+- OpenCode 1.18.18 completed an isolated coding task using real `read`, `write` and
+  `bash` calls. Six of eight initial tests failed; after its fix **8/8 passed** in an
+  independent run, with the test file hash unchanged. All four assistant requests
+  used V100; no helper inference was delegated to RTX 5090.
+- Server logs prove OpenCode forwards Medium8192 and Low2048 thinking budgets.
+  OpenCode requests 32000 output tokens, below the advertised 32768 model maximum.
+  XHigh24576 is configured but was not separately exercised through the GUI.
+- The installed OpenCode Desktop catalog displays NInfer alongside Flash Next.
+  Flash Next and `qwen-build` remain defaults; existing sessions were preserved.
+  The global configuration API reloaded the cache after confirming no busy sessions
+  or live PTYs; the OpenCode server process was not restarted.
+
+The active old Qwen GGUF/projector and standalone llama.cpp runtime are removed only
+after these checks. Unrelated dormant MIMIR/Gemma archives are retained; a systemd
+condition prevents the legacy MIMIR GPU unit from loading alongside NInfer. CPU
+ASR/TTS/VAD units are unchanged. This is an active-service migration, not a purge of
+all unrelated historical LLM files on the VM.

@@ -1,0 +1,148 @@
+{
+  "date": "2026-09-23",
+  "engine_code_commit": "7cac899a",
+  "deployed_source_commit_before_final_docs": "59563922",
+  "profile": {
+    "context": 262144,
+    "kv_dtype": "int8",
+    "mtp": 4,
+    "prefill_chunk": 2048,
+    "vision": true,
+    "default_effort": "medium",
+    "default_thinking_budget": 8192,
+    "default_max_tokens": 32768
+  },
+  "cold_long_vision": {
+    "ttft_any_s": 577.9397726580501,
+    "ttfa_final_s": 599.369756620028,
+    "e2e_s": 604.4285114330705,
+    "usage": {
+      "completion_tokens": 1045,
+      "completion_tokens_details": {
+        "reasoning_tokens": 798
+      },
+      "prompt_tokens": 226022,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "total_tokens": 227067
+    },
+    "finish_reason": "stop",
+    "done": true,
+    "facts_ok": true,
+    "engine_prefill_tokens_per_second": 391.5,
+    "engine_decode_tokens_per_second": 39.5,
+    "draft_accepted": 792,
+    "draft_total": 1106,
+    "retrieval_items_correct": 4
+  },
+  "api": {
+    "invalid_thinking_budget_checks": [
+      {
+        "input": 0,
+        "http_status": 400
+      },
+      {
+        "input": -1,
+        "http_status": 400
+      },
+      {
+        "input": true,
+        "http_status": 400
+      },
+      {
+        "input": 1.5,
+        "http_status": 400
+      },
+      {
+        "input": 4294967296,
+        "http_status": 400
+      }
+    ],
+    "canonical_close_probe": {
+      "thinking_budget": 16,
+      "reasoning_tokens": 40,
+      "answer": "323",
+      "finish_reason": "stop"
+    }
+  },
+  "service": {
+    "enabled": true,
+    "startup_and_controlled_restart_pass": true,
+    "sole_gpu_process": true
+  },
+  "opencode": {
+    "version": "1.18.18",
+    "initial_tests": "8 tests, 6 failing",
+    "final_tests": "8/8 passed",
+    "tests_sha256": "40f19dc3aaf4811739694c0ce5a3bf8265892acd9fa065323cbc36bae9b215ec",
+    "tests_unchanged": true,
+    "wire_requests": [
+      {
+        "effort": "medium",
+        "thinking_budget": 8192,
+        "requested_output_tokens": 32000,
+        "tool_calls": 3,
+        "finish_reason": "stop_token"
+      },
+      {
+        "effort": "medium",
+        "thinking_budget": 8192,
+        "requested_output_tokens": 32000,
+        "tool_calls": 1,
+        "finish_reason": "stop_token"
+      },
+      {
+        "effort": "medium",
+        "thinking_budget": 8192,
+        "requested_output_tokens": 32000,
+        "tool_calls": 1,
+        "finish_reason": "stop_token"
+      },
+      {
+        "effort": "medium",
+        "thinking_budget": 8192,
+        "requested_output_tokens": 32000,
+        "tool_calls": 0,
+        "finish_reason": "stop_token"
+      },
+      {
+        "effort": "low",
+        "thinking_budget": 2048,
+        "requested_output_tokens": 32000,
+        "tool_calls": 0,
+        "finish_reason": "stop_token"
+      }
+    ],
+    "native_catalog_visible": true,
+    "default_preserved": "local-qwen-next/qwen38-flash-next"
+  },
+  "cleanup": {
+    "removed": [
+      {
+        "path": "/home/vladimir/llama.cpp",
+        "allocated_bytes": 319262720
+      },
+      {
+        "path": "/home/vladimir/llama.cpp-full-clone.partial",
+        "allocated_bytes": 377659392
+      },
+      {
+        "path": "/home/vladimir/llama-transfer/cuda-12.9-build.tar",
+        "allocated_bytes": 1247637504
+      },
+      {
+        "path": "/home/vladimir/models/Qwen3.8-27B-Abliterated-Q4_K_M.gguf",
+        "allocated_bytes": 16810729472
+      },
+      {
+        "path": "/home/vladimir/models/mmproj-Qwen3.8-27B-Abliterated-F16.gguf",
+        "allocated_bytes": 927612928
+      }
+    ],
+    "removed_unit": "/etc/systemd/system/llama-v100.service",
+    "free_before_bytes": 11539267584,
+    "free_after_bytes": 31222173696,
+    "preserved": "benchmark records and unrelated MIMIR/Gemma archives, CPU ASR/TTS/VAD"
+  }
+}

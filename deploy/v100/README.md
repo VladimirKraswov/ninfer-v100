@@ -88,3 +88,39 @@ Use a new output path for a different seed/profile; existing case IDs are skippe
 for resumability. Historical reports must not be overwritten with rerun results.
 The production profile overrides older per-fixture output limits. Record that change
 when comparing results; it is not a controlled engine-only quality comparison.
+
+## OpenCode profile and service ownership
+
+Keep the stable `local-qwen38/qwen-v100` model ID and SSH-tunneled endpoint. Model
+limits are context 262144, input 229376, output 32768. Set the model default to
+`reasoningEffort: medium, thinking_budget: 8192`; variant budgets are Low 2048,
+Medium 8192 and XHigh 24576. The remaining output budget is available for answer/tool
+calls and the canonical close sequence. `qwen-v100-build.md` is the matching agent
+profile. Flash Next on RTX 5090 remains the user's global default.
+OpenCode 1.18.18 currently sends a 32000-token response ceiling. With its existing
+global compaction reserve of 32768, the input229376 setting starts automatic
+compaction at 196608 tokens; the physical model context remains 262144. This avoids
+silently changing the Flash Next compaction settings when adding V100.
+
+This host also has an archived MIMIR llama.cpp unit. Disabling that unit alone is
+insufficient because `mimir.target` explicitly Wants it. Install
+`mimir-llm-guard.conf` as a drop-in for that legacy unit on this host: while the
+NInfer service file exists, its condition prevents a second model from loading on
+boot. Do not restart or remove the separate CPU ASR/TTS/VAD services.
+
+## Operating and recovering this deployment
+
+The owner's SSH alias is `ssh vm-v100`; the VM is Proxmox 5100 on node `pve`.
+The service's source checkout is `/srv/ninfer-v100-lab/engine/ninfer`, with this
+GitHub fork as `origin` and geoffwatts as `upstream`. Use the checked-out production
+revision, rather than pulling an untested upstream update into the running service.
+Inspect with `systemctl status ninfer-v100` and `journalctl -u ninfer-v100`.
+The API listens on the existing VM LAN address/port in the unit. The Mac connects
+through its existing local SSH tunnel on port18021; no new public port is exposed.
+
+Deployment receipts and old unit/source provenance are retained in
+`/srv/ninfer-v100-lab/migration-20260923/`. The former active Qwen GGUF/projector and
+standalone llama.cpp installation were deleted at the owner's request after service
+and OpenCode acceptance. Old benchmark data is retained. Restoring that old engine
+now requires downloading/rebuilding its recorded runtime and weights; it is no
+longer an instant service toggle. Do not start the old and new GPU engines together.
