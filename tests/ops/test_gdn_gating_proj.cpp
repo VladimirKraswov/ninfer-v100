@@ -510,12 +510,17 @@ int main() {
     for (int mode : {1, 2, 3, 4})
         failures +=
             run_norm_projection_case(kQwen38Parent, 16, 0x5800u + mode, norm_execution, true, mode);
+    // BF16 staging previously violated the FP64 formula for mode=4 at replay phase=1.
+    // Exercise the same sign/scale transition on both sides of each SIMT tile boundary.
+    for (int tokens : {2, 3, 14, 15, 28, 29})
+        failures += run_norm_projection_case(kQwen38Parent, tokens, 0x8800u + tokens,
+                                             norm_execution, true, 4);
     failures += run_norm_projection_case(kQwen35, 1, 0x4001u, norm_execution);
     failures += run_norm_projection_case(kQwen35, 16, 0x4010u, norm_execution);
     failures += run_norm_projection_case(kQwen35, 17, 0x4011u, norm_execution);
     failures += run_norm_projection_case(kQwen35, 64, 0x4040u, norm_execution);
 
-    // Requalify the retained BF16-staging profile at every prefill reduction boundary.
+    // Qualify complete controls at every prefill reduction boundary.
     for (int tokens : {1024, 1025, 2048, 2049, 4097})
         failures +=
             run_norm_projection_case(kQwen38Parent, tokens, 0x6800u + tokens, norm_execution);

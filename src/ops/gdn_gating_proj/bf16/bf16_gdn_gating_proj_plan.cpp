@@ -334,6 +334,8 @@ const char* bf16_gdn_norm_gating_schedule_name(Bf16GdnNormGatingScheduleId sched
     switch (schedule) {
     case Bf16GdnNormGatingScheduleId::Composed:
         return "gdn_norm_gating_proj.bf16.composed";
+    case Bf16GdnNormGatingScheduleId::SimtNorm27:
+        return "gdn_norm_gating_proj.bf16.simt.norm27";
     case Bf16GdnNormGatingScheduleId::MmaCooperativeSplit32:
         return "gdn_norm_gating_proj.bf16.mma.cooperative_split32";
     }
@@ -396,6 +398,12 @@ std::size_t bf16_gdn_gating_capacity_workspace_bytes(std::int32_t heads, std::in
 
 Bf16GdnNormGatingPlan bf16_gdn_norm_gating_resolve_plan(const Bf16GdnGatingProblem& problem) {
     Bf16GdnGatingPlan control            = bf16_gdn_gating_resolve_plan(problem);
+#ifdef NINFER_VOLTA_BUILD
+    // The composed BF16 intermediate exceeds the complete-formula error bound
+    // for 27B control gates. This SIMT kernel keeps the controls in FP32 and
+    // rounds only the independently observable h output; it needs no scratch.
+    if (is_27(problem)) { return {Bf16GdnNormGatingScheduleId::SimtNorm27, control, 0}; }
+#endif
     Bf16GdnNormGatingScheduleId schedule = Bf16GdnNormGatingScheduleId::Composed;
     std::int32_t norm_splits             = 0;
     // The fused norm+gating schedule launches
@@ -423,6 +431,14 @@ std::size_t bf16_gdn_norm_gating_capacity_workspace_bytes(std::int32_t heads,
                                                           std::int32_t input_rows,
                                                           std::int32_t min_cols,
                                                           std::int32_t max_cols) {
+#ifdef NINFER_VOLTA_BUILD
+    if (heads == 48 && input_rows == 5120) {
+        if (min_cols <= 0 || max_cols < min_cols) {
+            throw std::invalid_argument("BF16 GDN norm gating: invalid column interval");
+        }
+        return 0;
+    }
+#endif
     std::size_t maximum =
         bf16_gdn_gating_capacity_workspace_bytes(heads, input_rows, min_cols, max_cols);
     if (heads == 32 && input_rows == 2048 && min_cols <= 16) {
@@ -471,6 +487,11 @@ void bf16_gdn_norm_gating_dispatch(const Tensor& x, const Tensor& norm_weight, f
                                    Tensor& g, Tensor& beta, DeviceExecutionView execution) {
     const Bf16GdnGatingProblem problem{g.ne[0], x.ne[0], x.ne[1]};
     const Bf16GdnNormGatingPlan plan = bf16_gdn_norm_gating_resolve_plan(problem);
+    if (plan.schedule == Bf16GdnNormGatingScheduleId::SimtNorm27) {
+        bf16_gdn_norm_gating_proj_27_launch(x, norm_weight, eps, h, a_weight, b_weight, A_log,
+                                            dt_bias, g, beta, execution.stream);
+        return;
+    }
     if (plan.schedule == Bf16GdnNormGatingScheduleId::Composed) {
         rmsnorm(x, norm_weight, eps, true, h, execution.stream);
         execute_resolved(plan.control, problem, h, a_weight, b_weight, A_log, dt_bias, ws, g, beta,

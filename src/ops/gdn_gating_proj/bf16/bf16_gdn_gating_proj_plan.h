@@ -39,6 +39,7 @@ struct Bf16GdnGatingPlan {
 
 enum class Bf16GdnNormGatingScheduleId {
     Composed,
+    SimtNorm27,
     MmaCooperativeSplit32,
 };
 
