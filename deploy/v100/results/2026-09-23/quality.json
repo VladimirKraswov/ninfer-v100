@@ -1,0 +1,2742 @@
+{
+  "profile": {
+    "code_revision": "7cac899a",
+    "model": "qwen-v100",
+    "effort": "medium",
+    "max_tokens": 32768,
+    "thinking_budget": 8192,
+    "root_seed": 20260923,
+    "retry": 0,
+    "mtp": 4,
+    "prefill_chunk": 2048
+  },
+  "summary": {
+    "code": {
+      "pass": 51,
+      "total": 51
+    },
+    "instruction": {
+      "pass": 15,
+      "total": 16
+    },
+    "math": {
+      "pass": 20,
+      "total": 20
+    },
+    "tools_followup": {
+      "pass": 2,
+      "total": 2
+    },
+    "tools_turn1": {
+      "pass": 9,
+      "total": 9
+    },
+    "vision": {
+      "pass": 10,
+      "total": 10
+    }
+  },
+  "rescoring_changes": [],
+  "records": [
+    {
+      "case_id": "code-01",
+      "kind": "code",
+      "attempts": 1,
+      "ok": true,
+      "why": "ok",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 231,
+        "completion_tokens_details": {
+          "reasoning_tokens": 177
+        },
+        "prompt_tokens": 128,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 359
+      },
+      "content_head": "```python\ndef dedupe(seq):\n    seen = set()\n    result = []\n    for item in seq:\n        if item not in seen:\n            seen.add(item)\n            result.append(item)\n    return result\n```",
+      "seed": 1834146878,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 2.8
+    },
+    {
+      "case_id": "code-02",
+      "kind": "code",
+      "attempts": 1,
+      "ok": true,
+      "why": "ok",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 469,
+        "completion_tokens_details": {
+          "reasoning_tokens": 380
+        },
+        "prompt_tokens": 129,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 598
+      },
+      "content_head": "```python\ndef top_words(text, k):\n    if not text or k <= 0:\n        return []\n\n    counts = {}\n    for word in text.lower().split():\n        counts[word] = counts.get(word, 0) + 1\n\n    ranked = sorted(counts.items(), key=lambda item: (-item[1], item[0]))\n    return ranked[:k]\n```",
+      "seed": 3664147813,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 7.4
+    },
+    {
+      "case_id": "code-03",
+      "kind": "code",
+      "attempts": 1,
+      "ok": true,
+      "why": "ok",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 502,
+        "completion_tokens_details": {
+          "reasoning_tokens": 399
+        },
+        "prompt_tokens": 125,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 627
+      },
+      "content_head": "```python\ndef merge(intervals):\n    if not intervals:\n        return []\n    intervals.sort(key=lambda x: x[0])\n    result = [list(intervals[0])]\n    for s, e in intervals[1:]:\n        if s <= result[-1][1]:\n            result[-1][1] = max(result[-1][1], e)\n        else:\n            result.append([s, e])\n    return result\n```",
+      "seed": 2762642947,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 5.3
+    },
+    {
+      "case_id": "code-04",
+      "kind": "code",
+      "attempts": 1,
+      "ok": true,
+      "why": "ok",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 585,
+        "completion_tokens_details": {
+          "reasoning_tokens": 455
+        },
+        "prompt_tokens": 103,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 688
+      },
+      "content_head": "```python\ndef roman(s):\n    values = {'I': 1, 'V': 5, 'X': 10, 'L': 50, 'C': 100, 'D': 500, 'M': 1000}\n    total = 0\n    for i in range(len(s)):\n        if i + 1 < len(s) and values[s[i]] < values[s[i + 1]]:\n            total -= values[s[i]]\n        else:\n            total += values[s[i]]\n    return total\n```",
+      "seed": 4111243366,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 6.0
+    },
+    {
+      "case_id": "code-05",
+      "kind": "code",
+      "attempts": 1,
+      "ok": true,
+      "why": "ok",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 447,
+        "completion_tokens_details": {
+          "reasoning_tokens": 287
+        },
+        "prompt_tokens": 115,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 562
+      },
+      "content_head": "```python\ndef to_roman(n):\n    pairs = [\n        (1000, 'M'), (900, 'CM'), (500, 'D'), (400, 'CD'),\n        (100, 'C'), (90, 'XC'), (50, 'L'), (40, 'XL'),\n        (10, 'X'), (9, 'IX'), (5, 'V'), (4, 'IV'), (1, 'I')\n    ]\n    result = []\n    for value, numeral in pairs:\n        while n >= value:\n            result.append(numeral)\n            n -= value\n    return ''.join(result)\n```",
+      "seed": 3663999453,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 4.9
+    },
+    {
+      "case_id": "code-06",
+      "kind": "code",
+      "attempts": 1,
+      "ok": true,
+      "why": "ok",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 467,
+        "completion_tokens_details": {
+          "reasoning_tokens": 376
+        },
+        "prompt_tokens": 98,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 565
+      },
+      "content_head": "```python\ndef balanced(s):\n    stack = []\n    pairs = {')': '(', ']': '[', '}': '{'}\n    for c in s:\n        if c in '([{':\n            stack.append(c)\n        elif c in ')]}':\n            if not stack or stack[-1] != pairs[c]:\n                return False\n            stack.pop()\n    return not stack\n```",
+      "seed": 2146197903,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 5.5
+    },
+    {
+      "case_id": "code-07",
+      "kind": "code",
+      "attempts": 1,
+      "ok": true,
+      "why": "ok",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 264,
+        "completion_tokens_details": {
+          "reasoning_tokens": 197
+        },
+        "prompt_tokens": 141,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 405
+      },
+      "content_head": "```python\ndef two_sum(nums, target):\n    n = len(nums)\n    for i in range(n):\n        for j in range(i + 1, n):\n            if nums[i] + nums[j] == target:\n                return [i, j]\n    return None\n```",
+      "seed": 3075161980,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 3.2
+    },
+    {
+      "case_id": "code-08",
+      "kind": "code",
+      "attempts": 1,
+      "ok": true,
+      "why": "ok",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 524,
+        "completion_tokens_details": {
+          "reasoning_tokens": 450
+        },
+        "prompt_tokens": 120,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 644
+      },
+      "content_head": "```python\ndef group(words):\n    from collections import defaultdict\n    d = defaultdict(list)\n    for w in words:\n        d[''.join(sorted(w))].append(w)\n    groups = [sorted(v) for v in d.values()]\n    groups.sort(key=lambda g: g[0])\n    return groups\n```",
+      "seed": 2698895599,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 5.6
+    },
+    {
+      "case_id": "code-09",
+      "kind": "code",
+      "attempts": 1,
+      "ok": true,
+      "why": "ok",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 698,
+        "completion_tokens_details": {
+          "reasoning_tokens": 616
+        },
+        "prompt_tokens": 131,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 829
+      },
+      "content_head": "```python\ndef longest_run(nums):\n    num_set = set(nums)\n    longest = 0\n    for num in num_set:\n        if num - 1 not in num_set:\n            current = 1\n            while num + current in num_set:\n                current += 1\n            longest = max(longest, current)\n    return longest\n```",
+      "seed": 2176647055,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 7.3
+    },
+    {
+      "case_id": "code-10",
+      "kind": "code",
+      "attempts": 1,
+      "ok": true,
+      "why": "ok",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 314,
+        "completion_tokens_details": {
+          "reasoning_tokens": 250
+        },
+        "prompt_tokens": 124,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 438
+      },
+      "content_head": "```python\nfrom collections import Counter\n\ndef top_k(nums, k):\n    freq = Counter(nums)\n    sorted_items = sorted(freq.items(), key=lambda x: (-x[1], x[0]))\n    return [item[0] for item in sorted_items[:k]]\n```",
+      "seed": 2154494988,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 3.2
+    },
+    {
+      "case_id": "code-11",
+      "kind": "code",
+      "attempts": 1,
+      "ok": true,
+      "why": "ok",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 621,
+        "completion_tokens_details": {
+          "reasoning_tokens": 525
+        },
+        "prompt_tokens": 111,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 732
+      },
+      "content_head": "```python\ndef gap(n):\n    positions = []\n    pos = 0\n    while n:\n        if n & 1:\n            positions.append(pos)\n        n >>= 1\n        pos += 1\n    if len(positions) < 2:\n        return 0\n    return max(positions[i + 1] - positions[i] for i in range(len(positions) - 1))\n```",
+      "seed": 281944,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 6.5
+    },
+    {
+      "case_id": "code-12",
+      "kind": "code",
+      "attempts": 1,
+      "ok": true,
+      "why": "ok",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 861,
+        "completion_tokens_details": {
+          "reasoning_tokens": 650
+        },
+        "prompt_tokens": 121,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 982
+      },
+      "content_head": "```python\ndef spiral(matrix):\n    if not matrix or not matrix[0]:\n        return []\n\n    result = []\n    top, bottom = 0, len(matrix) - 1\n    left, right = 0, len(matrix[0]) - 1\n\n    while top <= bottom and left <= right:\n        for i in range(left, right + 1):\n            result.append(matrix[top][i])\n        top += 1\n\n        for i in range(top, bottom + 1):\n            result.append(matrix[i][right])\n        right -= 1\n\n        if top <= bottom:\n            for i in range(right, left - 1, -1):\n                result.append(matrix[bottom][i])\n            bottom -= 1\n\n        if left <= righ",
+      "seed": 3444040597,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 9.1
+    },
+    {
+      "case_id": "code-13",
+      "kind": "code",
+      "attempts": 1,
+      "ok": true,
+      "why": "ok",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 417,
+        "completion_tokens_details": {
+          "reasoning_tokens": 340
+        },
+        "prompt_tokens": 112,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 529
+      },
+      "content_head": "```python\ndef rotate(matrix):\n    n = len(matrix)\n    for i in range(n):\n        for j in range(i + 1, n):\n            matrix[i][j], matrix[j][i] = matrix[j][i], matrix[i][j]\n    for i in range(n):\n        matrix[i].reverse()\n```",
+      "seed": 1975662315,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 4.6
+    },
+    {
+      "case_id": "code-14",
+      "kind": "code",
+      "attempts": 1,
+      "ok": true,
+      "why": "ok",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 903,
+        "completion_tokens_details": {
+          "reasoning_tokens": 759
+        },
+        "prompt_tokens": 145,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 1048
+      },
+      "content_head": "```python\nfrom collections import OrderedDict\n\nclass LRUCap:\n    def __init__(self, c):\n        self.c = c\n        self.d = OrderedDict()\n\n    def get(self, k):\n        if k in self.d:\n            self.d.move_to_end(k)\n            return self.d[k]\n        return -1\n\n    def put(self, k, v):\n        if k in self.d:\n            self.d.move_to_end(k)\n            self.d[k] = v\n        else:\n            if len(self.d) >= self.c:\n                self.d.popitem(last=False)\n            self.d[k] = v\n```",
+      "seed": 702322504,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 9.5
+    },
+    {
+      "case_id": "code-15",
+      "kind": "code",
+      "attempts": 1,
+      "ok": true,
+      "why": "ok",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 641,
+        "completion_tokens_details": {
+          "reasoning_tokens": 474
+        },
+        "prompt_tokens": 142,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 783
+      },
+      "content_head": "```python\nclass MinStack:\n    def __init__(self):\n        self._stack = []  # list of (value, current_min) tuples\n\n    def push(self, x):\n        if self._stack:\n            current_min = self._stack[-1][1]\n        else:\n            current_min = x\n        new_min = min(x, current_min)\n        self._stack.append((x, new_min))\n\n    def pop(self):\n        if not self._stack:\n            raise IndexError(\"pop from empty stack\")\n        return self._stack.pop()[0]\n\n    def min(self):\n        if not self._stack:\n            raise IndexError(\"min from empty stack\")\n        return self._stack[-1][1]\n",
+      "seed": 3824462961,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 7.7
+    },
+    {
+      "case_id": "code-16",
+      "kind": "code",
+      "attempts": 1,
+      "ok": true,
+      "why": "ok",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 1263,
+        "completion_tokens_details": {
+          "reasoning_tokens": 1151
+        },
+        "prompt_tokens": 110,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 1373
+      },
+      "content_head": "```python\ndef gen(n):\n    results = []\n    def helper(s, open_count, close_count):\n        if len(s) == 2 * n:\n            results.append(s)\n            return\n        if open_count < n:\n            helper(s + '(', open_count + 1, close_count)\n        if close_count < open_count:\n            helper(s + ')', open_count, close_count + 1)\n    helper('', 0, 0)\n    return results\n```",
+      "seed": 2122760650,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 14.7
+    },
+    {
+      "case_id": "code-17",
+      "kind": "code",
+      "attempts": 1,
+      "ok": true,
+      "why": "ok",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 713,
+        "completion_tokens_details": {
+          "reasoning_tokens": 622
+        },
+        "prompt_tokens": 122,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 835
+      },
+      "content_head": "```python\ndef perm(nums):\n    result = []\n    def backtrack(remaining, path):\n        if not remaining:\n            result.append(path[:])\n            return\n        for i in range(len(remaining)):\n            path.append(remaining[i])\n            backtrack(remaining[:i] + remaining[i+1:], path)\n            path.pop()\n    backtrack(list(nums), [])\n    return result\n```",
+      "seed": 318559468,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 8.4
+    },
+    {
+      "case_id": "code-18",
+      "kind": "code",
+      "attempts": 1,
+      "ok": true,
+      "why": "ok",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 364,
+        "completion_tokens_details": {
+          "reasoning_tokens": 321
+        },
+        "prompt_tokens": 118,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 482
+      },
+      "content_head": "```python\ndef subsets(nums):\n    result = [[]]\n    for num in nums:\n        result += [s + [num] for s in result]\n    return result\n```",
+      "seed": 652685072,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 4.3
+    },
+    {
+      "case_id": "code-19",
+      "kind": "code",
+      "attempts": 1,
+      "ok": true,
+      "why": "ok",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 975,
+        "completion_tokens_details": {
+          "reasoning_tokens": 911
+        },
+        "prompt_tokens": 113,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 1088
+      },
+      "content_head": "```python\ndef climb(n):\n    if n <= 1:\n        return 1\n    a, b = 1, 2\n    for _ in range(3, n + 1):\n        a, b = b, a + b\n    return b\n```",
+      "seed": 1927480398,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 11.3
+    },
+    {
+      "case_id": "code-20",
+      "kind": "code",
+      "attempts": 1,
+      "ok": true,
+      "why": "ok",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 738,
+        "completion_tokens_details": {
+          "reasoning_tokens": 621
+        },
+        "prompt_tokens": 110,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 848
+      },
+      "content_head": "```python\ndef coins(amount, denoms):\n    dp = [float('inf')] * (amount + 1)\n    dp[0] = 0\n    for i in range(1, amount + 1):\n        for d in denoms:\n            if d <= i and dp[i - d] != float('inf'):\n                dp[i] = min(dp[i], dp[i - d] + 1)\n    return dp[amount] if dp[amount] != float('inf') else -1\n```",
+      "seed": 2450742635,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 7.8
+    },
+    {
+      "case_id": "code-21",
+      "kind": "code",
+      "attempts": 1,
+      "ok": true,
+      "why": "ok",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 605,
+        "completion_tokens_details": {
+          "reasoning_tokens": 541
+        },
+        "prompt_tokens": 114,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 719
+      },
+      "content_head": "```python\ndef rob(money):\n    prev2 = 0\n    prev1 = 0\n    for m in money:\n        curr = max(prev1, prev2 + m)\n        prev2 = prev1\n        prev1 = curr\n    return prev1\n```",
+      "seed": 1181172626,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 6.3
+    },
+    {
+      "case_id": "code-22",
+      "kind": "code",
+      "attempts": 1,
+      "ok": true,
+      "why": "ok",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 612,
+        "completion_tokens_details": {
+          "reasoning_tokens": 550
+        },
+        "prompt_tokens": 114,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 726
+      },
+      "content_head": "```python\ndef max_sub(nums):\n    best = nums[0]\n    curr = nums[0]\n    for x in nums[1:]:\n        curr = max(x, curr + x)\n        best = max(best, curr)\n    return best\n```",
+      "seed": 179611798,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 7.1
+    },
+    {
+      "case_id": "code-23",
+      "kind": "code",
+      "attempts": 1,
+      "ok": true,
+      "why": "ok",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 394,
+        "completion_tokens_details": {
+          "reasoning_tokens": 335
+        },
+        "prompt_tokens": 103,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 497
+      },
+      "content_head": "```python\ndef can_jump(nums):\n    farthest = 0\n    for i in range(len(nums)):\n        if i > farthest:\n            return False\n        farthest = max(farthest, i + nums[i])\n    return True\n```",
+      "seed": 2843188871,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 4.3
+    },
+    {
+      "case_id": "code-24",
+      "kind": "code",
+      "attempts": 1,
+      "ok": true,
+      "why": "ok",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 202,
+        "completion_tokens_details": {
+          "reasoning_tokens": 100
+        },
+        "prompt_tokens": 116,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 318
+      },
+      "content_head": "```python\ndef merge_two(a, b):\n    result = []\n    i, j = 0, 0\n    while i < len(a) and j < len(b):\n        if a[i] <= b[j]:\n            result.append(a[i])\n            i += 1\n        else:\n            result.append(b[j])\n            j += 1\n    result.extend(a[i:])\n    result.extend(b[j:])\n    return result\n```",
+      "seed": 1760790057,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 2.4
+    },
+    {
+      "case_id": "code-25",
+      "kind": "code",
+      "attempts": 1,
+      "ok": true,
+      "why": "ok",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 698,
+        "completion_tokens_details": {
+          "reasoning_tokens": 599
+        },
+        "prompt_tokens": 109,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 807
+      },
+      "content_head": "```python\ndef qsort(a):\n    if len(a) <= 1:\n        return list(a)\n    pivot = a[len(a) // 2]\n    left = [x for x in a if x < pivot]\n    middle = [x for x in a if x == pivot]\n    right = [x for x in a if x > pivot]\n    return qsort(left) + middle + qsort(right)\n```",
+      "seed": 25637032,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 7.2
+    },
+    {
+      "case_id": "code-26",
+      "kind": "code",
+      "attempts": 1,
+      "ok": true,
+      "why": "ok",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 386,
+        "completion_tokens_details": {
+          "reasoning_tokens": 291
+        },
+        "prompt_tokens": 120,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 506
+      },
+      "content_head": "```python\ndef bsearch(a, x):\n    lo, hi = 0, len(a) - 1\n    while lo <= hi:\n        mid = (lo + hi) // 2\n        if a[mid] == x:\n            return mid\n        elif a[mid] < x:\n            lo = mid + 1\n        else:\n            hi = mid - 1\n    return -1\n```",
+      "seed": 3653398277,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 4.1
+    },
+    {
+      "case_id": "code-27",
+      "kind": "code",
+      "attempts": 1,
+      "ok": true,
+      "why": "ok",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 689,
+        "completion_tokens_details": {
+          "reasoning_tokens": 553
+        },
+        "prompt_tokens": 117,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 806
+      },
+      "content_head": "```python\ndef flatten(d):\n    result = {}\n\n    def _flatten(obj, prefix):\n        if isinstance(obj, dict):\n            for key, value in obj.items():\n                new_key = f\"{prefix}.{key}\" if prefix else str(key)\n                _flatten(value, new_key)\n        elif isinstance(obj, list):\n            for i, value in enumerate(obj):\n                new_key = f\"{prefix}.{i}\" if prefix else str(i)\n                _flatten(value, new_key)\n        else:\n            result[prefix] = obj\n\n    _flatten(d, \"\")\n    return result\n```",
+      "seed": 4270828813,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 7.3
+    },
+    {
+      "case_id": "code-28",
+      "kind": "code",
+      "attempts": 1,
+      "ok": true,
+      "why": "ok",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 52,
+        "completion_tokens_details": {
+          "reasoning_tokens": 17
+        },
+        "prompt_tokens": 110,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 162
+      },
+      "content_head": "```python\ndef transpose(m):\n    if not m:\n        return []\n    return [list(row) for row in zip(*m)]\n```",
+      "seed": 1870448495,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 1.0
+    },
+    {
+      "case_id": "code-29",
+      "kind": "code",
+      "attempts": 1,
+      "ok": true,
+      "why": "ok",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 556,
+        "completion_tokens_details": {
+          "reasoning_tokens": 443
+        },
+        "prompt_tokens": 99,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 655
+      },
+      "content_head": "```python\ndef primes(n):\n    if n < 2:\n        return []\n    sieve = [True] * n\n    sieve[0] = False\n    sieve[1] = False\n    for i in range(2, int(n**0.5) + 1):\n        if sieve[i]:\n            for j in range(i * i, n, i):\n                sieve[j] = False\n    return [i for i in range(2, n) if sieve[i]]\n```",
+      "seed": 1902919154,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 5.6
+    },
+    {
+      "case_id": "code-30",
+      "kind": "code",
+      "attempts": 1,
+      "ok": true,
+      "why": "ok",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 71,
+        "completion_tokens_details": {
+          "reasoning_tokens": 23
+        },
+        "prompt_tokens": 100,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 171
+      },
+      "content_head": "```python\nimport math\n\ndef gcd_all(nums):\n    result = nums[0]\n    for n in nums[1:]:\n        result = math.gcd(result, n)\n    return result\n```",
+      "seed": 1654613552,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 1.3
+    },
+    {
+      "case_id": "code-31",
+      "kind": "code",
+      "attempts": 1,
+      "ok": true,
+      "why": "ok",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 320,
+        "completion_tokens_details": {
+          "reasoning_tokens": 255
+        },
+        "prompt_tokens": 107,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 427
+      },
+      "content_head": "```python\ndef is_pal(seq):\n    left = 0\n    right = len(seq) - 1\n    while left < right:\n        if seq[left] != seq[right]:\n            return False\n        left += 1\n        right -= 1\n    return True\n```",
+      "seed": 1991656436,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 4.3
+    },
+    {
+      "case_id": "code-32",
+      "kind": "code",
+      "attempts": 1,
+      "ok": true,
+      "why": "ok",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 471,
+        "completion_tokens_details": {
+          "reasoning_tokens": 364
+        },
+        "prompt_tokens": 115,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 586
+      },
+      "content_head": "```python\ndef rle(s):\n    if not s:\n        return ''\n    result = []\n    count = 1\n    for i in range(1, len(s)):\n        if s[i] == s[i - 1]:\n            count += 1\n        else:\n            result.append(s[i - 1] + str(count))\n            count = 1\n    result.append(s[-1] + str(count))\n    return ''.join(result)\n```",
+      "seed": 3499452745,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 5.0
+    },
+    {
+      "case_id": "code-33",
+      "kind": "code",
+      "attempts": 1,
+      "ok": true,
+      "why": "ok",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 462,
+        "completion_tokens_details": {
+          "reasoning_tokens": 343
+        },
+        "prompt_tokens": 107,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 569
+      },
+      "content_head": "```python\ndef caesar(s, k):\n    result = []\n    for ch in s:\n        if 'A' <= ch <= 'Z':\n            result.append(chr((ord(ch) - ord('A') + k) % 26 + ord('A')))\n        elif 'a' <= ch <= 'z':\n            result.append(chr((ord(ch) - ord('a') + k) % 26 + ord('a')))\n        else:\n            result.append(ch)\n    return ''.join(result)\n```",
+      "seed": 4162828162,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 5.1
+    },
+    {
+      "case_id": "code-34",
+      "kind": "code",
+      "attempts": 1,
+      "ok": true,
+      "why": "ok",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 949,
+        "completion_tokens_details": {
+          "reasoning_tokens": 871
+        },
+        "prompt_tokens": 112,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 1061
+      },
+      "content_head": "```python\nimport re\n\ndef snake(camel):\n    s = re.sub(r'([a-z0-9])([A-Z])', r'\\1_\\2', camel)\n    s = re.sub(r'([A-Z]+)([A-Z][a-z])', r'\\1_\\2', s)\n    return s.lower()\n```",
+      "seed": 2653580613,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 11.0
+    },
+    {
+      "case_id": "code-35",
+      "kind": "code",
+      "attempts": 1,
+      "ok": true,
+      "why": "ok",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 645,
+        "completion_tokens_details": {
+          "reasoning_tokens": 505
+        },
+        "prompt_tokens": 130,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 775
+      },
+      "content_head": "```python\ndef cmp(v1, v2):\n    parts1 = [int(x) for x in v1.split('.')]\n    parts2 = [int(x) for x in v2.split('.')]\n    max_len = max(len(parts1), len(parts2))\n    parts1 += [0] * (max_len - len(parts1))\n    parts2 += [0] * (max_len - len(parts2))\n    for a, b in zip(parts1, parts2):\n        if a < b:\n            return -1\n        if a > b:\n            return 1\n    return 0\n```",
+      "seed": 3709557628,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 6.0
+    },
+    {
+      "case_id": "code-36",
+      "kind": "code",
+      "attempts": 1,
+      "ok": true,
+      "why": "ok",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 160,
+        "completion_tokens_details": {
+          "reasoning_tokens": 141
+        },
+        "prompt_tokens": 95,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 255
+      },
+      "content_head": "```python\ndef count_words(s):\n    return len(s.split())\n```",
+      "seed": 366084352,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 1.9
+    },
+    {
+      "case_id": "code-37",
+      "kind": "code",
+      "attempts": 1,
+      "ok": true,
+      "why": "ok",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 311,
+        "completion_tokens_details": {
+          "reasoning_tokens": 228
+        },
+        "prompt_tokens": 111,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 422
+      },
+      "content_head": "```python\ndef matmul(A, B):\n    n = len(A)\n    C = [[0] * n for _ in range(n)]\n    for i in range(n):\n        for j in range(n):\n            for k in range(n):\n                C[i][j] += A[i][k] * B[k][j]\n    return C\n```",
+      "seed": 2068249749,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 3.4
+    },
+    {
+      "case_id": "code-38",
+      "kind": "code",
+      "attempts": 1,
+      "ok": true,
+      "why": "ok",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 852,
+        "completion_tokens_details": {
+          "reasoning_tokens": 662
+        },
+        "prompt_tokens": 160,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 1012
+      },
+      "content_head": "```python\ndef next_day(y, m, d):\n    def is_leap(year):\n        return (year % 4 == 0 and year % 100 != 0) or (year % 400 == 0)\n\n    days_in_month = [31, 29 if is_leap(y) else 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]\n\n    if d < days_in_month[m - 1]:\n        return (y, m, d + 1)\n    elif m < 12:\n        return (y, m + 1, 1)\n    else:\n        return (y + 1, 1, 1)\n```",
+      "seed": 2981907977,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 8.3
+    },
+    {
+      "case_id": "code-39",
+      "kind": "code",
+      "attempts": 1,
+      "ok": true,
+      "why": "ok",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 184,
+        "completion_tokens_details": {
+          "reasoning_tokens": 83
+        },
+        "prompt_tokens": 120,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 304
+      },
+      "content_head": "```python\ndef fizz(n):\n    result = []\n    for i in range(1, n + 1):\n        if i % 15 == 0:\n            result.append('FizzBuzz')\n        elif i % 3 == 0:\n            result.append('Fizz')\n        elif i % 5 == 0:\n            result.append('Buzz')\n        else:\n            result.append(str(i))\n    return result\n```",
+      "seed": 985044834,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 2.3
+    },
+    {
+      "case_id": "code-40",
+      "kind": "code",
+      "attempts": 1,
+      "ok": true,
+      "why": "ok",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 354,
+        "completion_tokens_details": {
+          "reasoning_tokens": 314
+        },
+        "prompt_tokens": 102,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 456
+      },
+      "content_head": "```python\ndef bits(n):\n    count = 0\n    while n:\n        n &= n - 1\n        count += 1\n    return count\n```",
+      "seed": 1463593149,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 4.3
+    },
+    {
+      "case_id": "code-41",
+      "kind": "code",
+      "attempts": 1,
+      "ok": true,
+      "why": "ok",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 395,
+        "completion_tokens_details": {
+          "reasoning_tokens": 363
+        },
+        "prompt_tokens": 107,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 502
+      },
+      "content_head": "```python\ndef pow2(n):\n    return n > 0 and (n & (n - 1)) == 0\n```",
+      "seed": 1896536570,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 4.7
+    },
+    {
+      "case_id": "code-42",
+      "kind": "code",
+      "attempts": 1,
+      "ok": true,
+      "why": "ok",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 754,
+        "completion_tokens_details": {
+          "reasoning_tokens": 605
+        },
+        "prompt_tokens": 122,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 876
+      },
+      "content_head": "```python\ndef kth_odd_prime(k):\n    def is_prime(n):\n        if n < 2:\n            return False\n        if n == 2:\n            return True\n        if n % 2 == 0:\n            return False\n        for i in range(3, int(n ** 0.5) + 1, 2):\n            if n % i == 0:\n                return False\n        return True\n\n    count = 0\n    n = 3\n    while True:\n        if is_prime(n):\n            count += 1\n            if count == k:\n                return n\n        n += 2\n```",
+      "seed": 3180246548,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 7.2
+    },
+    {
+      "case_id": "code-43",
+      "kind": "code",
+      "attempts": 1,
+      "ok": true,
+      "why": "ok",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 153,
+        "completion_tokens_details": {
+          "reasoning_tokens": 95
+        },
+        "prompt_tokens": 95,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 248
+      },
+      "content_head": "```python\ndef common_prefix(a, b):\n    n = min(len(a), len(b))\n    i = 0\n    while i < n and a[i] == b[i]:\n        i += 1\n    return a[:i]\n```",
+      "seed": 17648309,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 1.9
+    },
+    {
+      "case_id": "code-44",
+      "kind": "code",
+      "attempts": 1,
+      "ok": true,
+      "why": "ok",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 307,
+        "completion_tokens_details": {
+          "reasoning_tokens": 253
+        },
+        "prompt_tokens": 101,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 408
+      },
+      "content_head": "```python\ndef deep_sum(lst):\n    total = 0\n    for item in lst:\n        if isinstance(item, list):\n            total += deep_sum(item)\n        else:\n            total += item\n    return total\n```",
+      "seed": 3444852268,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 3.5
+    },
+    {
+      "case_id": "code-45",
+      "kind": "code",
+      "attempts": 1,
+      "ok": true,
+      "why": "ok",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 541,
+        "completion_tokens_details": {
+          "reasoning_tokens": 506
+        },
+        "prompt_tokens": 107,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 648
+      },
+      "content_head": "```python\ndef sdiv(a, b):\n    try:\n        return a / b\n    except ZeroDivisionError:\n        return None\n```",
+      "seed": 232330130,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 6.7
+    },
+    {
+      "case_id": "code-46",
+      "kind": "code",
+      "attempts": 1,
+      "ok": true,
+      "why": "ok",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 287,
+        "completion_tokens_details": {
+          "reasoning_tokens": 253
+        },
+        "prompt_tokens": 113,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 400
+      },
+      "content_head": "```python\ndef chunk(lst, n):\n    return [lst[i:i+n] for i in range(0, len(lst), n)]\n```",
+      "seed": 2795617037,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 3.4
+    },
+    {
+      "case_id": "code-47",
+      "kind": "code",
+      "attempts": 1,
+      "ok": true,
+      "why": "ok",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 201,
+        "completion_tokens_details": {
+          "reasoning_tokens": 177
+        },
+        "prompt_tokens": 105,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 306
+      },
+      "content_head": "```python\ndef rev_words(s):\n    return ' '.join(s.split()[::-1])\n```",
+      "seed": 1339876032,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 2.5
+    },
+    {
+      "case_id": "code-48",
+      "kind": "code",
+      "attempts": 1,
+      "ok": true,
+      "why": "ok",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 706,
+        "completion_tokens_details": {
+          "reasoning_tokens": 636
+        },
+        "prompt_tokens": 115,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 821
+      },
+      "content_head": "```python\ndef pairs(a, target):\n    freq = {}\n    count = 0\n    for val in a:\n        complement = target - val\n        count += freq.get(complement, 0)\n        freq[val] = freq.get(val, 0) + 1\n    return count\n```",
+      "seed": 2899566590,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 7.6
+    },
+    {
+      "case_id": "code-49",
+      "kind": "code",
+      "attempts": 1,
+      "ok": true,
+      "why": "ok",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 147,
+        "completion_tokens_details": {
+          "reasoning_tokens": 97
+        },
+        "prompt_tokens": 92,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 239
+      },
+      "content_head": "```python\ndef hist(s):\n    d = {}\n    for ch in s:\n        if ch != ' ':\n            d[ch] = d.get(ch, 0) + 1\n    return d\n```",
+      "seed": 995588220,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 2.1
+    },
+    {
+      "case_id": "code-50",
+      "kind": "code",
+      "attempts": 1,
+      "ok": true,
+      "why": "ok",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 1986,
+        "completion_tokens_details": {
+          "reasoning_tokens": 1900
+        },
+        "prompt_tokens": 125,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 2111
+      },
+      "content_head": "```python\nimport re\n\ndef is_num(s):\n    if not isinstance(s, str) or not s:\n        return False\n    pattern = r'^[+-]?(?:(?:0|[1-9]\\d*)(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?$'\n    return bool(re.match(pattern, s))\n```",
+      "seed": 1178943768,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 26.2
+    },
+    {
+      "case_id": "code-51",
+      "kind": "code",
+      "attempts": 1,
+      "ok": true,
+      "why": "ok",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 291,
+        "completion_tokens_details": {
+          "reasoning_tokens": 242
+        },
+        "prompt_tokens": 102,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 393
+      },
+      "content_head": "```python\ndef sum_range(a, b):\n    if a > b:\n        return 0\n    n = b - a + 1\n    return n * (a + b) // 2\n```",
+      "seed": 1535235727,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 3.3
+    },
+    {
+      "case_id": "math-01",
+      "kind": "math",
+      "attempts": 1,
+      "ok": true,
+      "why": "content='Вычисляем выражение 84 * 3 / 2 по порядку операций (умножение и деление выполняются слева направо):\\n\\n1. **Умножение:** 84 × 3 = 252\\n2. **Деление:** 252 ÷ 2 = 126\\n\\nANSWER: 126'",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 137,
+        "completion_tokens_details": {
+          "reasoning_tokens": 57
+        },
+        "prompt_tokens": 47,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 184
+      },
+      "content_head": "Вычисляем выражение 84 * 3 / 2 по порядку операций (умножение и деление выполняются слева направо):\n\n1. **Умножение:** 84 × 3 = 252\n2. **Деление:** 252 ÷ 2 = 126\n\nANSWER: 126",
+      "seed": 3550990936,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 1.8
+    },
+    {
+      "case_id": "math-02",
+      "kind": "math",
+      "attempts": 1,
+      "ok": true,
+      "why": "content='Для нахождения наибольшего общего делителя (НОД) чисел 252 и 198 воспользуюсь алгоритмом Евклида.\\n\\n**Шаг 1:** 252 = 198 × 1 + 54\\n**Шаг 2:** 198 = 54 × 3 + 36\\n**Шаг 3:** 54 = 36 × 1 + 18\\n**Шаг 4:** 36 '",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 385,
+        "completion_tokens_details": {
+          "reasoning_tokens": 166
+        },
+        "prompt_tokens": 50,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 435
+      },
+      "content_head": "Для нахождения наибольшего общего делителя (НОД) чисел 252 и 198 воспользуюсь алгоритмом Евклида.\n\n**Шаг 1:** 252 = 198 × 1 + 54\n**Шаг 2:** 198 = 54 × 3 + 36\n**Шаг 3:** 54 = 36 × 1 + 18\n**Шаг 4:** 36 = 18 × 2 + 0\n\nОстаток стал нулём, значит НОД — последний ненулевой остаток: **18**.\n\n**Проверка:**\n- 252 = 18 × 14\n- 198 = 18 × 11\n- НОД(14, 11) = 1 (числа 14 и 11 взаимно просты) ✓\n\nANSWER: 18",
+      "seed": 250906793,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 4.2
+    },
+    {
+      "case_id": "math-03",
+      "kind": "math",
+      "attempts": 1,
+      "ok": true,
+      "why": "content='## Сумма чётных чисел от 2 до 100\\n\\n**Идентификация последовательности:**\\n2, 4, 6, 8, …, 100 — арифметическая прогрессия с разностью d = 2.\\n\\n**Количество членов:**\\nn = (100 − 2) / 2 + 1 = 50\\n\\n**Сумма п'",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 466,
+        "completion_tokens_details": {
+          "reasoning_tokens": 234
+        },
+        "prompt_tokens": 53,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 519
+      },
+      "content_head": "## Сумма чётных чисел от 2 до 100\n\n**Идентификация последовательности:**\n2, 4, 6, 8, …, 100 — арифметическая прогрессия с разностью d = 2.\n\n**Количество членов:**\nn = (100 − 2) / 2 + 1 = 50\n\n**Сумма по формуле:**\nS = n / 2 · (a₁ + aₙ) = 50 / 2 · (2 + 100) = 25 · 102 = **2550**\n\n**Проверка альтернативным способом:**\n2 + 4 + 6 + … + 100 = 2(1 + 2 + 3 + … + 50) = 2 · (50·51/2) = 50 · 51 = 2550 ✓\n\nANSWER: 2550",
+      "seed": 897996106,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 5.0
+    },
+    {
+      "case_id": "math-04",
+      "kind": "math",
+      "attempts": 1,
+      "ok": true,
+      "why": "content='**Рассуждение:**\\n\\nИсходная цена: 1 200 000 руб.\\n\\n**Шаг 1 — повышение на 15%:**\\n1 200 000 × 1,15 = 1 380 000 руб.\\n\\n**Шаг 2 — скидка 15% от новой цены:**\\n1 380 000 × (1 − 0,15) = 1 380 000 × 0,85 = 1 17'",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 548,
+        "completion_tokens_details": {
+          "reasoning_tokens": 324
+        },
+        "prompt_tokens": 74,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 622
+      },
+      "content_head": "**Рассуждение:**\n\nИсходная цена: 1 200 000 руб.\n\n**Шаг 1 — повышение на 15%:**\n1 200 000 × 1,15 = 1 380 000 руб.\n\n**Шаг 2 — скидка 15% от новой цены:**\n1 380 000 × (1 − 0,15) = 1 380 000 × 0,85 = 1 173 000 руб.\n\nПроверка через коэффициент: 1,15 × 0,85 = 0,9775, то есть итоговая цена — 97,75 % от исходной:\n1 200 000 × 0,9775 = 1 173 000 руб.\n\nANSWER: 1173000",
+      "seed": 2466745111,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 5.6
+    },
+    {
+      "case_id": "math-05",
+      "kind": "math",
+      "attempts": 1,
+      "ok": true,
+      "why": "content='В сутках 24 часа.\\nВ каждом часе 60 минут.\\nВ каждой минуте 60 секунд.\\n\\nСледовательно, общее количество секунд в сутках:\\n\\n24 × 60 × 60 = 24 × 3600 = 86 400.\\n\\nANSWER: 86400'",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 188,
+        "completion_tokens_details": {
+          "reasoning_tokens": 106
+        },
+        "prompt_tokens": 41,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 229
+      },
+      "content_head": "В сутках 24 часа.\nВ каждом часе 60 минут.\nВ каждой минуте 60 секунд.\n\nСледовательно, общее количество секунд в сутках:\n\n24 × 60 × 60 = 24 × 3600 = 86 400.\n\nANSWER: 86400",
+      "seed": 3256570772,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 2.5
+    },
+    {
+      "case_id": "math-06",
+      "kind": "math",
+      "attempts": 1,
+      "ok": true,
+      "why": "content='2^10 — это произведение десяти двоек. Посчитаем по шагам:\\n\\n- 2¹ = 2\\n- 2² = 4\\n- 2³ = 8\\n- 2⁴ = 16\\n- 2⁵ = 32\\n- 2⁶ = 64\\n- 2⁷ = 128\\n- 2⁸ = 256\\n- 2⁹ = 512\\n- 2¹⁰ = 1024\\n\\nКаждый раз умножаем предыдущий резуль'",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 315,
+        "completion_tokens_details": {
+          "reasoning_tokens": 154
+        },
+        "prompt_tokens": 39,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 354
+      },
+      "content_head": "2^10 — это произведение десяти двоек. Посчитаем по шагам:\n\n- 2¹ = 2\n- 2² = 4\n- 2³ = 8\n- 2⁴ = 16\n- 2⁵ = 32\n- 2⁶ = 64\n- 2⁷ = 128\n- 2⁸ = 256\n- 2⁹ = 512\n- 2¹⁰ = 1024\n\nКаждый раз умножаем предыдущий результат на 2, и на десятом шаге получаем 1024.\n\nANSWER: 1024",
+      "seed": 997045695,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 3.6
+    },
+    {
+      "case_id": "math-07",
+      "kind": "math",
+      "attempts": 1,
+      "ok": true,
+      "why": "content='Чтобы найти количество нулей на конце факториала, нужно подсчитать, сколько пар простых множителей (2·5) входит в разложение числа, так как каждый такой множитель даёт один нуль на конце.\\n\\nПоскольку м'",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 432,
+        "completion_tokens_details": {
+          "reasoning_tokens": 178
+        },
+        "prompt_tokens": 44,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 476
+      },
+      "content_head": "Чтобы найти количество нулей на конце факториала, нужно подсчитать, сколько пар простых множителей (2·5) входит в разложение числа, так как каждый такой множитель даёт один нуль на конце.\n\nПоскольку множителей 2 всегда больше, чем множителей 5, достаточно посчитать, сколько раз число 5 входит в разложение чисел от 1 до 15:\n\n**Подсчёт множителей 5:**\n- Числа, кратные 5: 5, 10, 15 → дают по одному множителю 5 (всего 3)\n- Числа, кратные 25: 25, 50, … → среди чисел до 15 таких нет (всего 0)\n\nИтого: ⌊15/5⌋ + ⌊15/25⌋ = 3 + 0 = **3**\n\n**Проверка:** 15! = 1 307 674 368 000 — действительно, в конце три",
+      "seed": 910194510,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 5.5
+    },
+    {
+      "case_id": "math-08",
+      "kind": "math",
+      "attempts": 1,
+      "ok": true,
+      "why": "content='Решаем уравнение 3x + 7 = 31.\\n\\n1) Переносим 7 в правую часть:\\n3x = 31 − 7\\n3x = 24\\n\\n2) Делим обе части на 3:\\nx = 24 / 3\\nx = 8\\n\\nПроверка: 3·8 + 7 = 24 + 7 = 31 ✓\\n\\nANSWER: 8'",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 182,
+        "completion_tokens_details": {
+          "reasoning_tokens": 77
+        },
+        "prompt_tokens": 50,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 232
+      },
+      "content_head": "Решаем уравнение 3x + 7 = 31.\n\n1) Переносим 7 в правую часть:\n3x = 31 − 7\n3x = 24\n\n2) Делим обе части на 3:\nx = 24 / 3\nx = 8\n\nПроверка: 3·8 + 7 = 24 + 7 = 31 ✓\n\nANSWER: 8",
+      "seed": 2478931171,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 2.2
+    },
+    {
+      "case_id": "math-09",
+      "kind": "math",
+      "attempts": 1,
+      "ok": true,
+      "why": "content='## Рассуждение\\n\\n**Формула:** Площадь круга = π·r². Нужно вычислить 2·π·r² при r = 7.\\n\\n**Подстановка:**\\n2 · 3.14159265 · 7² = 2 · 3.14159265 · 49 = 98 · 3.14159265\\n\\n**Вычисление:**\\n98 · 3.14159265 = 10'",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 620,
+        "completion_tokens_details": {
+          "reasoning_tokens": 396
+        },
+        "prompt_tokens": 69,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 689
+      },
+      "content_head": "## Рассуждение\n\n**Формула:** Площадь круга = π·r². Нужно вычислить 2·π·r² при r = 7.\n\n**Подстановка:**\n2 · 3.14159265 · 7² = 2 · 3.14159265 · 49 = 98 · 3.14159265\n\n**Вычисление:**\n98 · 3.14159265 = 100 · 3.14159265 − 2 · 3.14159265\n= 314.159265 − 6.28318530\n= **307.8760797**\n\n**Округление:** 307.876… → 308 (ближайшее целое).\n\nANSWER: 308",
+      "seed": 2958404174,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 6.7
+    },
+    {
+      "case_id": "math-10",
+      "kind": "math",
+      "attempts": 1,
+      "ok": true,
+      "why": "content='Куб — это правильный многогранник, у которого все грани являются квадратами. Рассмотрим его структуру:\\n\\n- У куба есть верхняя и нижняя грани — это 2 грани.\\n- У куба есть передняя и задняя грани — это '",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 299,
+        "completion_tokens_details": {
+          "reasoning_tokens": 111
+        },
+        "prompt_tokens": 42,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 341
+      },
+      "content_head": "Куб — это правильный многогранник, у которого все грани являются квадратами. Рассмотрим его структуру:\n\n- У куба есть верхняя и нижняя грани — это 2 грани.\n- У куба есть передняя и задняя грани — это ещё 2 грани.\n- У куба есть левая и правая грани — это ещё 2 грани.\n\nВсего: 2 + 2 + 2 = 6 граней.\n\nЭто согласуется с формулой Эйлера для выпуклых многогранников: Г − Р + В = 2 (где Г — грани, Р — рёбра, В — вершины). У куба: 6 граней, 12 рёбер, 8 вершин. Проверка: 6 − 12 + 8 = 2. ✓\n\nANSWER: 6",
+      "seed": 3651924987,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 3.9
+    },
+    {
+      "case_id": "math-11",
+      "kind": "math",
+      "attempts": 1,
+      "ok": true,
+      "why": "content='В коробке всего 5 + 7 = 12 шаров. Из них красных — 5.\\n\\nВероятность вытащить красный шар:\\n\\nP = (количество красных) / (общее количество) = 5 / 12 = 0,41666…\\n\\nОкругляя до двух знаков после запятой: 0,41'",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 294,
+        "completion_tokens_details": {
+          "reasoning_tokens": 190
+        },
+        "prompt_tokens": 58,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 352
+      },
+      "content_head": "В коробке всего 5 + 7 = 12 шаров. Из них красных — 5.\n\nВероятность вытащить красный шар:\n\nP = (количество красных) / (общее количество) = 5 / 12 = 0,41666…\n\nОкругляя до двух знаков после запятой: 0,4166… → 0,42.\n\nANSWER: 0.42",
+      "seed": 2967903693,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 3.7
+    },
+    {
+      "case_id": "math-12",
+      "kind": "math",
+      "attempts": 1,
+      "ok": true,
+      "why": "content='## Нахождение последних двух цифр числа 7^2026\\n\\nМне нужно вычислить 7^2026 mod 100.\\n\\n**Шаг 1: Находим период степеней 7 по модулю 100.**\\n\\n- 7¹ ≡ 07 (mod 100)\\n- 7² ≡ 49 (mod 100)\\n- 7³ ≡ 343 ≡ 43 (mod 1'",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 524,
+        "completion_tokens_details": {
+          "reasoning_tokens": 257
+        },
+        "prompt_tokens": 46,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 570
+      },
+      "content_head": "## Нахождение последних двух цифр числа 7^2026\n\nМне нужно вычислить 7^2026 mod 100.\n\n**Шаг 1: Находим период степеней 7 по модулю 100.**\n\n- 7¹ ≡ 07 (mod 100)\n- 7² ≡ 49 (mod 100)\n- 7³ ≡ 343 ≡ 43 (mod 100)\n- 7⁴ ≡ 2401 ≡ **01** (mod 100)\n\nПоскольку 7⁴ ≡ 1 (mod 100), степени 7 по модулю 100 имеют **период 4**.\n\n**Шаг 2: Упрощаем показатель.**\n\n2026 = 506 × 4 + 2, то есть 2026 mod 4 = 2.\n\n**Шаг 3: Вычисляем.**\n\n7^2026 ≡ 7² ≡ 49 (mod 100).\n\nANSWER: 49",
+      "seed": 3111816948,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 5.6
+    },
+    {
+      "case_id": "math-13",
+      "kind": "math",
+      "attempts": 1,
+      "ok": true,
+      "why": "content='Число делится и на 3, и на 5 тогда и только тогда, когда оно делится на НОК(3, 5) = 15.\\n\\nМне нужно найти, сколько крат 15 содержатся в диапазоне от 1 до 100.\\n\\nПеречислим их:\\n15, 30, 45, 60, 75, 90\\n\\nСл'",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 364,
+        "completion_tokens_details": {
+          "reasoning_tokens": 208
+        },
+        "prompt_tokens": 59,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 423
+      },
+      "content_head": "Число делится и на 3, и на 5 тогда и только тогда, когда оно делится на НОК(3, 5) = 15.\n\nМне нужно найти, сколько крат 15 содержатся в диапазоне от 1 до 100.\n\nПеречислим их:\n15, 30, 45, 60, 75, 90\n\nСледующее — 105, что уже превышает 100.\n\nМожно также вычислить напрямую: ⌊100 / 15⌋ = ⌊6.67⌋ = 6.\n\nANSWER: 6",
+      "seed": 120330726,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 4.3
+    },
+    {
+      "case_id": "math-14",
+      "kind": "math",
+      "attempts": 1,
+      "ok": true,
+      "why": "content='Рассуждение:\\n\\nРаскроем выражение алгебраически:\\n\\n(a+b)² = a² + 2ab + b²\\n\\nСледовательно:\\n(a+b)² − (a² + b²) = a² + 2ab + b² − a² − b² = **2ab**\\n\\nПодставляем a = 9, b = 12:\\n\\n2ab = 2 · 9 · 12 = 216\\n\\nПров'",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 369,
+        "completion_tokens_details": {
+          "reasoning_tokens": 187
+        },
+        "prompt_tokens": 55,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 424
+      },
+      "content_head": "Рассуждение:\n\nРаскроем выражение алгебраически:\n\n(a+b)² = a² + 2ab + b²\n\nСледовательно:\n(a+b)² − (a² + b²) = a² + 2ab + b² − a² − b² = **2ab**\n\nПодставляем a = 9, b = 12:\n\n2ab = 2 · 9 · 12 = 216\n\nПроверка числовым способом:\n- (9 + 12)² = 21² = 441\n- 9² + 12² = 81 + 144 = 225\n- 441 − 225 = 216 ✓\n\nANSWER: 216",
+      "seed": 1918204646,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 3.9
+    },
+    {
+      "case_id": "math-15",
+      "kind": "math",
+      "attempts": 1,
+      "ok": true,
+      "why": "content='Чтобы перевести скорость из км/ч в м/с, нужно учесть, что:\\n\\n- 1 км = 1000 м\\n- 1 час = 3600 с\\n\\nСледовательно, для перевода из км/ч в м/с умножаем на 1000 и делим на 3600:\\n\\n90 км/ч = 90 × 1000 / 3600 = '",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 239,
+        "completion_tokens_details": {
+          "reasoning_tokens": 110
+        },
+        "prompt_tokens": 49,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 288
+      },
+      "content_head": "Чтобы перевести скорость из км/ч в м/с, нужно учесть, что:\n\n- 1 км = 1000 м\n- 1 час = 3600 с\n\nСледовательно, для перевода из км/ч в м/с умножаем на 1000 и делим на 3600:\n\n90 км/ч = 90 × 1000 / 3600 = 90 000 / 3600 = 25 м/с\n\nANSWER: 25",
+      "seed": 515209839,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 2.9
+    },
+    {
+      "case_id": "math-16",
+      "kind": "math",
+      "attempts": 1,
+      "ok": true,
+      "why": "content='## Вычисление C(10,3)\\n\\n**Формула:**\\n\\n$$C(n,k) = \\\\frac{n!}{k!(n-k)!}$$\\n\\n**Подставляем:**\\n\\n$$C(10,3) = \\\\frac{10!}{3!\\\\cdot 7!} = \\\\frac{10 \\\\times 9 \\\\times 8}{3 \\\\times 2 \\\\times 1}$$\\n\\n**Расчёт числителя:**\\n'",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 308,
+        "completion_tokens_details": {
+          "reasoning_tokens": 146
+        },
+        "prompt_tokens": 45,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 353
+      },
+      "content_head": "## Вычисление C(10,3)\n\n**Формула:**\n\n$$C(n,k) = \\frac{n!}{k!(n-k)!}$$\n\n**Подставляем:**\n\n$$C(10,3) = \\frac{10!}{3!\\cdot 7!} = \\frac{10 \\times 9 \\times 8}{3 \\times 2 \\times 1}$$\n\n**Расчёт числителя:**\n\n10 × 9 × 8 = 720\n\n**Расчёт знаменателя:**\n\n3 × 2 × 1 = 6\n\n**Деление:**\n\n720 ÷ 6 = 120\n\nANSWER: 120",
+      "seed": 2850353902,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 3.6
+    },
+    {
+      "case_id": "math-17",
+      "kind": "math",
+      "attempts": 1,
+      "ok": true,
+      "why": "content='## Рассуждение\\n\\nДано:\\n- Начальная сумма (тело вклада): **1000 ₽**\\n- Ставка: **10 % в месяц**\\n- Период: **2 месяца**\\n- Начисление: **сложный процент** (проценты прибавляются к основанию каждый период)\\n'",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 384,
+        "completion_tokens_details": {
+          "reasoning_tokens": 141
+        },
+        "prompt_tokens": 67,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 451
+      },
+      "content_head": "## Рассуждение\n\nДано:\n- Начальная сумма (тело вклада): **1000 ₽**\n- Ставка: **10 % в месяц**\n- Период: **2 месяца**\n- Начисление: **сложный процент** (проценты прибавляются к основанию каждый период)\n\n**Формула сложного процента:**\n\n$$S = P \\cdot (1 + r)^n$$\n\nПодставляем:\n\n$$S = 1000 \\cdot (1 + 0{,}10)^2 = 1000 \\cdot 1{,}21 = 1210 \\text{ ₽}$$\n\nПроверка помесячно:\n- Конец 1-го месяца: 1000 × 1,10 = **1100 ₽**\n- Конец 2-го месяца: 1100 × 1,10 = **1210 ₽**\n\nИтого на счёте окажется 1210 рублей.\n\nANSWER: 1210",
+      "seed": 2569985133,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 4.7
+    },
+    {
+      "case_id": "math-18",
+      "kind": "math",
+      "attempts": 1,
+      "ok": true,
+      "why": "content='Чтобы определить, сколько бит содержится в 4 байтах, воспользуемся основным соотношением между битами и байтами:\\n\\n- 1 байт = 8 бит\\n\\nУмножаем количество байтов на количество бит в одном байте:\\n\\n4 байта'",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 152,
+        "completion_tokens_details": {
+          "reasoning_tokens": 73
+        },
+        "prompt_tokens": 43,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 195
+      },
+      "content_head": "Чтобы определить, сколько бит содержится в 4 байтах, воспользуемся основным соотношением между битами и байтами:\n\n- 1 байт = 8 бит\n\nУмножаем количество байтов на количество бит в одном байте:\n\n4 байта × 8 бит/байт = 32 бита\n\nANSWER: 32",
+      "seed": 2946579021,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 2.2
+    },
+    {
+      "case_id": "math-19",
+      "kind": "math",
+      "attempts": 1,
+      "ok": true,
+      "why": "content='## Анализ последовательности\\n\\n**Исходная последовательность:** 2, 6, 12, 20, 30\\n\\n**Шаг 1. Разности соседних членов:**\\n\\n| Переход | Разность |\\n|---|---|\\n| 6 − 2 | 4 |\\n| 12 − 6 | 6 |\\n| 20 − 12 | 8 |\\n| 3'",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 532,
+        "completion_tokens_details": {
+          "reasoning_tokens": 238
+        },
+        "prompt_tokens": 55,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 587
+      },
+      "content_head": "## Анализ последовательности\n\n**Исходная последовательность:** 2, 6, 12, 20, 30\n\n**Шаг 1. Разности соседних членов:**\n\n| Переход | Разность |\n|---|---|\n| 6 − 2 | 4 |\n| 12 − 6 | 6 |\n| 20 − 12 | 8 |\n| 30 − 20 | 10 |\n\nРазности: 4, 6, 8, 10 — арифметическая прогрессия с шагом 2.\n\n**Шаг 2. Следующая разность:** 10 + 2 = **12**\n\n**Шаг 3. Следующий член:** 30 + 12 = **42**\n\n**Проверка через формулу.** Каждый член можно записать как произведение двух последовательных чисел:\n\n- 2 = 1·2\n- 6 = 2·3\n- 12 = 3·4\n- 20 = 4·5\n- 30 = 5·6\n- след. = **6·7 = 42** ✓\n\nОба подхода дают один результат.\n\nANSWER: 42",
+      "seed": 1783457772,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 5.6
+    },
+    {
+      "case_id": "math-20",
+      "kind": "math",
+      "attempts": 1,
+      "ok": true,
+      "why": "content='**Рассуждение:**\\n\\nДва поезда движутся навстречу друг другу, поэтому их скорости складываются:\\n\\n- Скорость первого поезда: 80 км/ч\\n- Скорость второго поезда: 120 км/ч\\n- Скорость сближения: 80 + 120 = 2'",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 269,
+        "completion_tokens_details": {
+          "reasoning_tokens": 120
+        },
+        "prompt_tokens": 76,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 345
+      },
+      "content_head": "**Рассуждение:**\n\nДва поезда движутся навстречу друг другу, поэтому их скорости складываются:\n\n- Скорость первого поезда: 80 км/ч\n- Скорость второго поезда: 120 км/ч\n- Скорость сближения: 80 + 120 = 200 км/ч\n\nРасстояние между ними: 400 км.\n\nВремя до встречи:\n\nt = 400 / 200 = 2 часа\n\nПереводим в минуты:\n\n2 × 60 = 120 минут.\n\nANSWER: 120",
+      "seed": 1465033875,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 3.2
+    },
+    {
+      "case_id": "instr-format-bullets",
+      "kind": "instruction",
+      "attempts": 1,
+      "ok": true,
+      "why": "content='- Юпитер (95 спутников)\\n- Сатурн (146 спутников)\\n- Уран (28 спутников)'",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 286,
+        "completion_tokens_details": {
+          "reasoning_tokens": 249
+        },
+        "prompt_tokens": 55,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 341
+      },
+      "content_head": "- Юпитер (95 спутников)\n- Сатурн (146 спутников)\n- Уран (28 спутников)",
+      "seed": 1708188048,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 3.2
+    },
+    {
+      "case_id": "instr-no-letter-o",
+      "kind": "instruction",
+      "attempts": 1,
+      "ok": true,
+      "why": "words=6 content='Весь день свет был там ярким.'",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 1996,
+        "completion_tokens_details": {
+          "reasoning_tokens": 1985
+        },
+        "prompt_tokens": 43,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 2039
+      },
+      "content_head": "Весь день свет был там ярким.",
+      "seed": 2954894911,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 23.3
+    },
+    {
+      "case_id": "instr-json-output",
+      "kind": "instruction",
+      "attempts": 1,
+      "ok": true,
+      "why": "got=[{'name': 'Анна', 'age': 24}, {'name': 'Борис', 'age': 31}, {'name': 'Вера', 'age': 47}]",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 144,
+        "completion_tokens_details": {
+          "reasoning_tokens": 109
+        },
+        "prompt_tokens": 59,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 203
+      },
+      "content_head": "[{\"name\":\"Анна\",\"age\":24},{\"name\":\"Борис\",\"age\":31},{\"name\":\"Вера\",\"age\":47}]",
+      "seed": 2716180562,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 1.8
+    },
+    {
+      "case_id": "instr-exactly-50-words",
+      "kind": "instruction",
+      "attempts": 1,
+      "ok": true,
+      "why": "n=50 content='Зима пришла тихо, укрыв землю белым покрывалом снега. Ветер шепчет в голых ветках берёз, а небо висит низко и серое. Дым'",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 2341,
+        "completion_tokens_details": {
+          "reasoning_tokens": 2236
+        },
+        "prompt_tokens": 46,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 2387
+      },
+      "content_head": "Зима пришла тихо, укрыв землю белым покрывалом снега. Ветер шепчет в голых ветках берёз, а небо висит низко и серое. Дым поднимается из труб домов, и воздух пахнет морозом. Дети лепят снеговиков, а коты свернулись калачиком у тёплых печек. Зима — время тишины, покоя и тёплого чая в маленькой чашке.",
+      "seed": 1806376715,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 20.3
+    },
+    {
+      "case_id": "instr-uppercase",
+      "kind": "instruction",
+      "attempts": 1,
+      "ok": true,
+      "why": "content='THE CAT IS SLEEPING ON THE WINDOWSILL.'",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 224,
+        "completion_tokens_details": {
+          "reasoning_tokens": 211
+        },
+        "prompt_tokens": 49,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 273
+      },
+      "content_head": "THE CAT IS SLEEPING ON THE WINDOWSILL.",
+      "seed": 742273670,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 3.2
+    },
+    {
+      "case_id": "instr-numbered-steps",
+      "kind": "instruction",
+      "attempts": 1,
+      "ok": true,
+      "why": "content='1. Смочите руки под тёплой проточной водой.\\n2. Нанесите мыло или антисептик на ладони.\\n3. Тщательно потрите руки между собой не менее 20 секунд, уделяя внимание ладоням, тыльной стороне, пальцам и ног'",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 201,
+        "completion_tokens_details": {
+          "reasoning_tokens": 109
+        },
+        "prompt_tokens": 52,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 253
+      },
+      "content_head": "1. Смочите руки под тёплой проточной водой.\n2. Нанесите мыло или антисептик на ладони.\n3. Тщательно потрите руки между собой не менее 20 секунд, уделяя внимание ладоням, тыльной стороне, пальцам и ногтям.\n4. Смойте мыло водой и высушите руки чистым полотенцем.",
+      "seed": 1023848937,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 3.2
+    },
+    {
+      "case_id": "instr-table",
+      "kind": "instruction",
+      "attempts": 1,
+      "ok": true,
+      "why": "missing=[] words=21",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 115,
+        "completion_tokens_details": {
+          "reasoning_tokens": 74
+        },
+        "prompt_tokens": 64,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 179
+      },
+      "content_head": "| Город | Страна |\n|-------|--------|\n| Москва | Россия |\n| Лиссабон | Португалия |\n| Оттава | Канада |",
+      "seed": 1775086864,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 1.6
+    },
+    {
+      "case_id": "instr-echo-reverse",
+      "kind": "instruction",
+      "attempts": 1,
+      "ok": false,
+      "why": "got='тон апо'",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 247,
+        "completion_tokens_details": {
+          "reasoning_tokens": 243
+        },
+        "prompt_tokens": 36,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 283
+      },
+      "content_head": "тон апо",
+      "seed": 1129314393,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 2.8
+    },
+    {
+      "case_id": "instr-two-paragraphs",
+      "kind": "instruction",
+      "attempts": 1,
+      "ok": true,
+      "why": "paras=2 first_words=16",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 751,
+        "completion_tokens_details": {
+          "reasoning_tokens": 643
+        },
+        "prompt_tokens": 54,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 805
+      },
+      "content_head": "Сон восстанавливает организм, укрепляет память и снижает риск хронических заболеваний. Достаточный отдых поддерживает настроение и продуктивность.\n\nВо время глубокого сна мозг обрабатывает информацию, очищаясь от накопившихся токсинов, а иммунитет усиливает защитные механизмы. Регулярный семичасовой сон предотвращает ожирение, диабет и сердечно-сосудистые расстройства, делая каждый бодрствующий день более энергичным и осмысленным.",
+      "seed": 2174600746,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 7.7
+    },
+    {
+      "case_id": "instr-keyvalue",
+      "kind": "instruction",
+      "attempts": 1,
+      "ok": true,
+      "why": "lines=['столица=Париж', 'валюта_Японии=иена', 'океан_к_востоку_от_Австралии=Тихий']",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 112,
+        "completion_tokens_details": {
+          "reasoning_tokens": 73
+        },
+        "prompt_tokens": 65,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 177
+      },
+      "content_head": "столица=Париж\nвалюта_Японии=иена\nокеан_к_востоку_от_Австралии=Тихий",
+      "seed": 945946969,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 1.4
+    },
+    {
+      "case_id": "instr-translation-order",
+      "kind": "instruction",
+      "attempts": 1,
+      "ok": true,
+      "why": "content='Guten Tag|Danke|Auf Wiedersehen'",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 162,
+        "completion_tokens_details": {
+          "reasoning_tokens": 150
+        },
+        "prompt_tokens": 60,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 222
+      },
+      "content_head": "Guten Tag|Danke|Auf Wiedersehen",
+      "seed": 2329780970,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 2.1
+    },
+    {
+      "case_id": "instr-code-only-csv",
+      "kind": "instruction",
+      "attempts": 1,
+      "ok": true,
+      "why": "lines=['key,value', 'a,1', 'b,2']",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 89,
+        "completion_tokens_details": {
+          "reasoning_tokens": 77
+        },
+        "prompt_tokens": 48,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 137
+      },
+      "content_head": "key,value\na,1\nb,2",
+      "seed": 2306823511,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 1.3
+    },
+    {
+      "case_id": "instr-summary-len",
+      "kind": "instruction",
+      "attempts": 1,
+      "ok": true,
+      "why": "missing=[] words=14",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 923,
+        "completion_tokens_details": {
+          "reasoning_tokens": 886
+        },
+        "prompt_tokens": 111,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 1034
+      },
+      "content_head": "Северстат отчитался: выручка выросла на 12%, прибыль упала на 4%, дивиденды — 30 рублей.",
+      "seed": 722236433,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 10.2
+    },
+    {
+      "case_id": "instr-no-first-person",
+      "kind": "instruction",
+      "attempts": 1,
+      "ok": true,
+      "why": "hit=None",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 355,
+        "completion_tokens_details": {
+          "reasoning_tokens": 297
+        },
+        "prompt_tokens": 48,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 403
+      },
+      "content_head": "Тесты позволяют убедиться в корректности работы кода и выявить ошибки до того, как продукт попадёт к конечному пользователю. Регулярное тестирование повышает надёжность системы и существенно снижает затраты на исправление дефектов на поздних этапах разработки.",
+      "seed": 1188059575,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 4.5
+    },
+    {
+      "case_id": "instr-extract-numbers",
+      "kind": "instruction",
+      "attempts": 1,
+      "ok": true,
+      "why": "got='1045, 12, 3000, 15'",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 144,
+        "completion_tokens_details": {
+          "reasoning_tokens": 124
+        },
+        "prompt_tokens": 76,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 220
+      },
+      "content_head": "1045, 12, 3000, 15",
+      "seed": 3650120346,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 1.7
+    },
+    {
+      "case_id": "tools-single-call",
+      "kind": "tools_turn1",
+      "attempts": 1,
+      "ok": true,
+      "why": "ok",
+      "finish": "tool_calls",
+      "usage": {
+        "completion_tokens": 61,
+        "completion_tokens_details": {
+          "reasoning_tokens": 28
+        },
+        "prompt_tokens": 337,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 398
+      },
+      "content_head": "",
+      "seed": 2097023072,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 1.1
+    },
+    {
+      "case_id": "tools-single-call-2",
+      "kind": "tools_turn1",
+      "attempts": 1,
+      "ok": true,
+      "why": "ok",
+      "finish": "tool_calls",
+      "usage": {
+        "completion_tokens": 59,
+        "completion_tokens_details": {
+          "reasoning_tokens": 23
+        },
+        "prompt_tokens": 320,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 379
+      },
+      "content_head": "",
+      "seed": 1986059191,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 1.1
+    },
+    {
+      "case_id": "tools-choose",
+      "kind": "tools_turn1",
+      "attempts": 1,
+      "ok": true,
+      "why": "ok",
+      "finish": "tool_calls",
+      "usage": {
+        "completion_tokens": 64,
+        "completion_tokens_details": {
+          "reasoning_tokens": 36
+        },
+        "prompt_tokens": 290,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 354
+      },
+      "content_head": "",
+      "seed": 3290981129,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 1.3
+    },
+    {
+      "case_id": "tools-arg-type",
+      "kind": "tools_turn1",
+      "attempts": 1,
+      "ok": true,
+      "why": "ok",
+      "finish": "tool_calls",
+      "usage": {
+        "completion_tokens": 72,
+        "completion_tokens_details": {
+          "reasoning_tokens": 40
+        },
+        "prompt_tokens": 332,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 404
+      },
+      "content_head": "",
+      "seed": 4195747428,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 1.2
+    },
+    {
+      "case_id": "tools-extra-1",
+      "kind": "tools_turn1",
+      "attempts": 1,
+      "ok": true,
+      "why": "ok",
+      "finish": "tool_calls",
+      "usage": {
+        "completion_tokens": 70,
+        "completion_tokens_details": {
+          "reasoning_tokens": 40
+        },
+        "prompt_tokens": 287,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 357
+      },
+      "content_head": "",
+      "seed": 929265746,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 1.3
+    },
+    {
+      "case_id": "tools-extra-2",
+      "kind": "tools_turn1",
+      "attempts": 1,
+      "ok": true,
+      "why": "ok",
+      "finish": "tool_calls",
+      "usage": {
+        "completion_tokens": 49,
+        "completion_tokens_details": {
+          "reasoning_tokens": 18
+        },
+        "prompt_tokens": 315,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 364
+      },
+      "content_head": "",
+      "seed": 2128090114,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 1.0
+    },
+    {
+      "case_id": "tools-extra-3",
+      "kind": "tools_turn1",
+      "attempts": 1,
+      "ok": true,
+      "why": "ok",
+      "finish": "tool_calls",
+      "usage": {
+        "completion_tokens": 67,
+        "completion_tokens_details": {
+          "reasoning_tokens": 38
+        },
+        "prompt_tokens": 287,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 354
+      },
+      "content_head": "",
+      "seed": 606810877,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 1.3
+    },
+    {
+      "case_id": "tools-extra-4",
+      "kind": "tools_turn1",
+      "attempts": 1,
+      "ok": true,
+      "why": "ok",
+      "finish": "tool_calls",
+      "usage": {
+        "completion_tokens": 60,
+        "completion_tokens_details": {
+          "reasoning_tokens": 30
+        },
+        "prompt_tokens": 322,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 382
+      },
+      "content_head": "",
+      "seed": 1251512507,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 1.1
+    },
+    {
+      "case_id": "tools-extra-5",
+      "kind": "tools_turn1",
+      "attempts": 1,
+      "ok": true,
+      "why": "ok",
+      "finish": "tool_calls",
+      "usage": {
+        "completion_tokens": 68,
+        "completion_tokens_details": {
+          "reasoning_tokens": 40
+        },
+        "prompt_tokens": 286,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 354
+      },
+      "content_head": "",
+      "seed": 3704474235,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 1.3
+    },
+    {
+      "case_id": "tools-none-when-forbidden",
+      "kind": "instruction",
+      "attempts": 1,
+      "ok": true,
+      "why": "tc=0 content='4'",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 40,
+        "completion_tokens_details": {
+          "reasoning_tokens": 37
+        },
+        "prompt_tokens": 301,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 341
+      },
+      "content_head": "4",
+      "seed": 2469261643,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 1.0
+    },
+    {
+      "case_id": "tools-followup",
+      "kind": "tools_followup",
+      "attempts": 1,
+      "ok": true,
+      "why": "content='3456 × 78 = **269 568**'",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 64,
+        "completion_tokens_details": {
+          "reasoning_tokens": 44
+        },
+        "prompt_tokens": 102,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 166
+      },
+      "content_head": "3456 × 78 = **269 568**",
+      "seed": 3031710830,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 1.4
+    },
+    {
+      "case_id": "tools-two-turn-chain",
+      "kind": "tools_followup",
+      "attempts": 1,
+      "ok": true,
+      "why": "content='ANSWER: 391'",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 43,
+        "completion_tokens_details": {
+          "reasoning_tokens": 34
+        },
+        "prompt_tokens": 94,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 137
+      },
+      "content_head": "ANSWER: 391",
+      "seed": 2169085964,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 0.9
+    },
+    {
+      "case_id": "vis-arrow-color",
+      "kind": "vision",
+      "attempts": 1,
+      "ok": true,
+      "why": "missing=[] words=1",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 57,
+        "completion_tokens_details": {
+          "reasoning_tokens": 52
+        },
+        "prompt_tokens": 269,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 326
+      },
+      "content_head": "Красный",
+      "seed": 2516883817,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 1.5
+    },
+    {
+      "case_id": "vis-ocr-code",
+      "kind": "vision",
+      "attempts": 1,
+      "ok": true,
+      "why": "content='CODE: 47382'",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 84,
+        "completion_tokens_details": {
+          "reasoning_tokens": 74
+        },
+        "prompt_tokens": 275,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 359
+      },
+      "content_head": "CODE: 47382",
+      "seed": 2465129294,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 1.7
+    },
+    {
+      "case_id": "vis-count-shapes",
+      "kind": "vision",
+      "attempts": 1,
+      "ok": true,
+      "why": "content='3'",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 58,
+        "completion_tokens_details": {
+          "reasoning_tokens": 55
+        },
+        "prompt_tokens": 268,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 326
+      },
+      "content_head": "3",
+      "seed": 1486750067,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 1.5
+    },
+    {
+      "case_id": "vis-tallest-bar",
+      "kind": "vision",
+      "attempts": 1,
+      "ok": true,
+      "why": "content='2'",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 74,
+        "completion_tokens_details": {
+          "reasoning_tokens": 71
+        },
+        "prompt_tokens": 276,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 350
+      },
+      "content_head": "2",
+      "seed": 4025059341,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 1.7
+    },
+    {
+      "case_id": "vis-grid-cell",
+      "kind": "vision",
+      "attempts": 1,
+      "ok": true,
+      "why": "content='строка 3, столбец 4'",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 492,
+        "completion_tokens_details": {
+          "reasoning_tokens": 480
+        },
+        "prompt_tokens": 296,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 788
+      },
+      "content_head": "строка 3, столбец 4",
+      "seed": 2327746324,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 6.6
+    },
+    {
+      "case_id": "vis-sum-expressions",
+      "kind": "vision",
+      "attempts": 1,
+      "ok": true,
+      "why": "content='69'",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 124,
+        "completion_tokens_details": {
+          "reasoning_tokens": 120
+        },
+        "prompt_tokens": 267,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 391
+      },
+      "content_head": "69",
+      "seed": 2176463356,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 2.0
+    },
+    {
+      "case_id": "vis-angle",
+      "kind": "vision",
+      "attempts": 1,
+      "ok": true,
+      "why": "missing=[] words=1",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 79,
+        "completion_tokens_details": {
+          "reasoning_tokens": 74
+        },
+        "prompt_tokens": 274,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 353
+      },
+      "content_head": "Прямой",
+      "seed": 500073582,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 1.9
+    },
+    {
+      "case_id": "vis-trend",
+      "kind": "vision",
+      "attempts": 1,
+      "ok": true,
+      "why": "missing=[] words=1",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 107,
+        "completion_tokens_details": {
+          "reasoning_tokens": 103
+        },
+        "prompt_tokens": 276,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 383
+      },
+      "content_head": "Рост",
+      "seed": 3647996114,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 2.6
+    },
+    {
+      "case_id": "vis-clock",
+      "kind": "vision",
+      "attempts": 1,
+      "ok": true,
+      "why": "content='12\\n\\n(Часовая стрелка на 12, минутная на 3 — то есть 15 минут; время 12:15, час — 12.)'",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 283,
+        "completion_tokens_details": {
+          "reasoning_tokens": 238
+        },
+        "prompt_tokens": 281,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 564
+      },
+      "content_head": "12\n\n(Часовая стрелка на 12, минутная на 3 — то есть 15 минут; время 12:15, час — 12.)",
+      "seed": 2873032545,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 4.5
+    },
+    {
+      "case_id": "vis-uppercase",
+      "kind": "vision",
+      "attempts": 1,
+      "ok": true,
+      "why": "content='2'",
+      "finish": "stop",
+      "usage": {
+        "completion_tokens": 85,
+        "completion_tokens_details": {
+          "reasoning_tokens": 82
+        },
+        "prompt_tokens": 266,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 351
+      },
+      "content_head": "2",
+      "seed": 3993897779,
+      "effort": "medium",
+      "max_tokens": 32768,
+      "thinking_budget": 8192,
+      "wall_s": 1.7
+    }
+  ]
+}

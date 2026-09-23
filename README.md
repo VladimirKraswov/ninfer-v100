@@ -3,7 +3,7 @@
 
 # NInfer
 
-> Up to 219 decode tok/s from Qwen 3.8 27B on a single V100.  With software NVFP4 on Volta.
+> Deployment measured on V100-SXM2-32GB with 262144 context and Vision: about 82 decode tok/s at 1267 input tokens and 66 at 29961 input tokens. [Qualification and limits](deploy/v100/results/2026-09-23/README.md).
 
 NInfer is a from-scratch C++/CUDA inference engine optimized for selected Qwen checkpoints on NVIDIA Tesla V100.
 
@@ -23,8 +23,9 @@ Artifacts contain the exact model weights, tokenizer, chat template, and require
 
 ## Performance
 
-Qwen3.8-27B NVFP4 reaches **218.98 decode tok/s** at K=1, with 99.2% MTP draft acceptance.
-That result is on a V100-PCIe-32GB, not SXM. The equivalent SXM2 card is roughly 7% faster; decode is predominantly HBM-bound, so PCIe bandwidth and host performance have little effect.
+Our deployed profile and comparative measurements are documented in [V100 qualification](deploy/v100/results/2026-09-23/README.md). It retains the full 262144 context and Vision.
+
+The following performance section is an **upstream reference**, not a result reproduced by this deployment. Upstream reports **218.98 decode tok/s** at K=1 with 99.2% MTP acceptance on V100-PCIe-32GB. Different prompts, acceptance rates, context and runtime settings make that peak unsuitable as an expectation for our coding workload.
 
 ### Tesla V100: software NVFP4 and groupwise inference
 

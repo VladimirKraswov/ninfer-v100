@@ -30,7 +30,9 @@ approval requirements beyond the user's instructions and the actual execution en
 NInfer is a from-scratch C++/CUDA inference engine for maximum single-GPU performance on explicitly
 registered artifacts. Current identities are `qwen3.6-27b/groupwise-int`, `qwen3.6-27b/nvfp4`,
 `qwen3.8-27b/groupwise-int`, `qwen3.8-27b/nvfp4`, and `qwen3.6-35b-a3b/groupwise-int`.
-The implementation targets `sm_120a` and is tuned on NVIDIA GeForce RTX 5090.
+This deployment fork targets `sm_70` on NVIDIA Tesla V100-SXM2-32GB with CUDA 12.9.
+The inherited upstream `sm_120a`/RTX 5090 paths are retained but are not requalified
+by the V100 deployment results. See `deploy/v100/README.md` for this fork's scope.
 
 Generation uses one GPU, one resident model, startup-fixed concurrency of one to eight requests,
 bounded FIFO ingress, no active-request preemption, and one compact decode batch per round.
@@ -138,11 +140,14 @@ Read the authority relevant to the current decision; this is not a mandatory rea
 Use `cmake --build <build-dir> -j` by default. Adjust parallelism when actual resource pressure
 causes failures or interferes with the task, and briefly explain why.
 
-Use the selected Python 3.11 interpreter explicitly. On this machine it is
-`/home/neroued/miniconda3/envs/py311/bin/python`; the default shell's `python3` may be a different
-version. Use `python3` only after selecting the maintainer environment or checking its version.
-Normal resources are `build/`, `out/qwen3_6_27b.ninfer`, its `.conversion.json` report, and
-`profiles/ncu/`, `profiles/nsys/`, `profiles/bench/`; the local toolchain is CUDA 13.1.
+Use an explicitly checked Python interpreter. The V100 VM uses `/usr/bin/python3`
+(Python 3.12.3); the deployment helper tests also run on the owner's Mac with Python
+3.14.6. Do not assume an upstream maintainer's Conda environment exists here.
+The deployed checkout is `/srv/ninfer-v100-lab/engine/ninfer`, build directory
+`build-v100/`, CUDA 12.9.86. The selected artifact is the pinned v2 Qwen3.8-27B NVFP4
+file documented in `deploy/v100/README.md`; current upstream v3 artifacts do not
+load in this revision. Run one inference process at a time on V100 and preserve
+unrelated CPU ASR/TTS services. Benchmark scripts must not compete with agent work.
 Select model artifacts by explicit path, never glob order, modification time, or unqualified
 “latest”. Source checkpoints and large artifacts are prerequisites; download or regenerate them
 only when that work is in scope. Install or upgrade dependencies only when the task needs it.

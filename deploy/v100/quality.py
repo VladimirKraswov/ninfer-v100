@@ -19,7 +19,11 @@ AP.add_argument("--retry", type=int, default=0)
 AP.add_argument("--seed", type=int, default=20260923)
 AP.add_argument("--effort", choices=("low", "medium", "xhigh"), default="medium")
 AP.add_argument("--timeout", type=int, default=3600)
+AP.add_argument("--max-tokens", type=int, default=None, help="Override fixture budgets, e.g. 32768 for the production profile")
+AP.add_argument("--thinking-budget", type=int, default=None, help="Per-request thinking cap (NInfer extension)")
 A = AP.parse_args()
+if (A.max_tokens is not None and A.max_tokens <= 0) or (A.thinking_budget is not None and A.thinking_budget <= 0):
+    AP.error("token budgets must be positive")
 
 SAMPLING = {
     "temperature": 1.0,
@@ -53,13 +57,6 @@ def extract_code(text):
 
 
 def run_python(code, test):
-    script = (
-        code
-        + "\n\nassert_fn_tests = lambda: ("
-        + test
-        + ")\n"
-        + 'exec("import types\\ntests = []\\n")\n'
-    )
     # asserts may contain ';' separated statements and multiple exprs — run as exec block
     runner = (
         code + "\n\n" + "import traceback, sys\n"
@@ -69,17 +66,14 @@ def run_python(code, test):
     p = subprocess.run(
         [sys.executable, "-I", "-c", runner], capture_output=True, text=True, timeout=25
     )
-    return ("TESTOK" in p.stdout, p.stdout + p.stderr[-800:])
+    return (p.returncode == 0 and "TESTOK" in p.stdout, p.stdout + p.stderr[-800:])
 
 
-def parse_json_block(text):
-    text = re.sub(r"^```(json)?|```$", "", text.strip(), flags=re.M).strip()
-    m = re.search(r"(\[.*\]|\{.*\})", text, re.S)
-    if not m:
-        return None
+def parse_json_content(text):
+    # These fixtures explicitly forbid Markdown and surrounding prose.
     try:
-        return json.loads(m.group(1))
-    except Exception:
+        return json.loads(text)
+    except json.JSONDecodeError:
         return None
 
 
@@ -132,7 +126,7 @@ def score(case, msg):
         n = len(content.split())
         return n == v["count"], f"n={n} content={content[:120]!r}"
     if mode == "json_strict":
-        got = parse_json_block(content)
+        got = parse_json_content(content)
         ok = got is not None and normalize(got) == normalize(v["expect"])
         return ok, f"got={got}"
     if mode == "paragraphs":
@@ -201,6 +195,10 @@ with open(A.out, "a") as out:
         payload["reasoning_effort"] = A.effort
         if case.get("extra"):
             payload.update(case["extra"])
+        if A.max_tokens is not None:
+            payload["max_tokens"] = A.max_tokens
+        if A.thinking_budget is not None:
+            payload["thinking_budget"] = A.thinking_budget
         rec = {"case_id": cid, "kind": case["kind"], "attempts": 0}
         t0 = time.time()
         last = None
@@ -223,6 +221,8 @@ with open(A.out, "a") as out:
                     "response": resp,
                     "seed": payload["seed"],
                     "effort": A.effort,
+                    "max_tokens": payload["max_tokens"],
+                    "thinking_budget": payload.get("thinking_budget"),
                     "tool_calls": msg.get("tool_calls"),
                 }
                 if ok:
