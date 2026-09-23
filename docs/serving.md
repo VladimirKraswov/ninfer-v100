@@ -194,12 +194,19 @@ not exposed by the loaded template returns HTTP 400 with code
 `reasoning_effort_not_supported` before prompt preparation.
 
 `--default-thinking-budget N` sets a positive process default for requests whose final resolved
-prompt semantics enable thinking. It does not add or reinterpret an HTTP request field: the
+prompt semantics enable thinking. The NInfer extension `thinking_budget` (positive integer)
+on Chat Completions and Responses overrides this cap per request; absent or null inherits the
+process default. Zero, fractional, negative and out-of-range budgets fail with HTTP 400. The
 existing `reasoning_effort` and `enable_thinking` inputs still decide whether thinking is enabled,
 and a request resolved to non-thinking receives no cap. `--no-thinking` may coexist with this
 option because a protocol request can explicitly enable thinking. Anthropic
 `thinking:{"type":"enabled","budget_tokens":N}` supplies a request-specific budget instead of
 this process default.
+
+`--default-reasoning-effort low|medium|xhigh` selects a process default for thinking-enabled
+requests that omit an effort. Explicit request effort wins; disabled thinking stays disabled.
+The loaded template must support the configured effort. Without this flag the artifact default
+is preserved. For coding agents, Medium avoids automatically opting every simple turn into XHigh.
 
 Add `--default-thinking-budget 512` to the startup command to cap model-origin thinking at 512
 tokens for every thinking-enabled request.
@@ -781,6 +788,7 @@ The table lists executable defaults. The startup example selects a long-context 
 | `--draft-tokens N` | MTP `1..5`; DFlash/DFlash2 `1..15` | unset |
 | `--lm-head-draft` | optimized proposal head | off |
 | `--default-max-tokens N` | output limit when omitted by a request | `8192` |
+| `--default-reasoning-effort low\|medium\|xhigh` | effort when omitted by a thinking-enabled request | artifact default |
 | `--default-thinking-budget N` | positive thinking cap inherited by thinking-enabled requests | unset |
 | `--vision` | enable media input and load Vision GPU allocations | off |
 | `--no-cuda-graph` | disable CUDA Graph decode | graphs on |

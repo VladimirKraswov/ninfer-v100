@@ -562,6 +562,35 @@ int test_reasoning_and_extensions() {
     return failures;
 }
 
+int test_thinking_budget() {
+    Json body = base_request();
+    int failures = 0;
+    ServeOptions server;
+    server.default_thinking_budget = 100;
+    body["thinking_budget"] = 64;
+    auto request = parse(body).generation;
+    failures += check(to_request_options(request, server, semantics(request), true)
+                          .execution.thinking.budget == 64,
+                      "request thinking budget must override the server cap");
+    body["thinking_budget"] = nullptr;
+    request = parse(body).generation;
+    failures += check(to_request_options(request, server, semantics(request), true)
+                          .execution.thinking.budget == 100,
+                      "null thinking budget must inherit the server cap");
+    body["thinking_budget"] = 64;
+    body["reasoning_effort"] = "none";
+    request = parse(body).generation;
+    failures += check(!options(request).execution.thinking.budget,
+                      "disabled thinking must not receive a cap");
+    for (const Json bad : {Json(0), Json(-1), Json(1.5), Json(true), Json("64"),
+                           Json(4294967296ULL)}) {
+        body["thinking_budget"] = bad;
+        failures += check(api_error([&] { (void)parse(body); }).status == 400,
+                          "invalid thinking budget must fail before inference");
+    }
+    return failures;
+}
+
 int test_stops_and_ranges() {
     int failures                            = 0;
     Json body                               = base_request();
@@ -788,6 +817,7 @@ int main() {
     failures += test_tools();
     failures += test_messages_and_media();
     failures += test_reasoning_and_extensions();
+    failures += test_thinking_budget();
     failures += test_stops_and_ranges();
     failures += test_aggregate_response();
     failures += test_stream_response();

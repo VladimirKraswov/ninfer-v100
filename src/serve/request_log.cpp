@@ -441,6 +441,7 @@ std::string format_server_start_json(
                                                           {"default_output_tokens", options.default_max_tokens},
                                                           {"default_thinking", options.enable_thinking},
                                                           {"default_thinking_budget", std::move(default_thinking_budget)},
+                                                          {"default_reasoning_effort", options.default_reasoning_effort ? Json(reasoning_effort_name(*options.default_reasoning_effort)) : Json(nullptr)},
                                                           {"default_preserve_thinking", options.preserve_thinking}};
     record["artifact"]                             = Json{{"path", options.artifact_path},
                                                           {"size_bytes", std::move(artifact_size)},

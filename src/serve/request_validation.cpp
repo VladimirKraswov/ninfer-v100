@@ -37,6 +37,16 @@ std::optional<int> optional_int(const RequestJson& object, const char* key) {
     return static_cast<int>(converted);
 }
 
+std::optional<std::uint32_t> parse_thinking_budget(const RequestJson& object) {
+    const auto budget = optional_int(object, "thinking_budget");
+    if (!budget) { return std::nullopt; }
+    if (*budget <= 0) {
+        bad_request("thinking_budget must be a positive integer; use reasoning_effort=none to "
+                    "disable thinking", "thinking_budget");
+    }
+    return static_cast<std::uint32_t>(*budget);
+}
+
 std::optional<double> optional_number(const RequestJson& object, const char* key) {
     if (!object.contains(key) || object.at(key).is_null()) { return std::nullopt; }
     if (!object.at(key).is_number()) { bad_request(std::string(key) + " must be a number", key); }

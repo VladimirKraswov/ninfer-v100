@@ -130,7 +130,17 @@ ResolvedPromptSemantics resolve_prompt_semantics(const GenerationRequest& reques
         }
         return result;
     };
-    if (!request.reasoning_effort) { return complete(); }
+    if (!request.reasoning_effort) {
+        if (result.enable_thinking && server.default_reasoning_effort) {
+            if (!capabilities.reasoning_effort.supports(*server.default_reasoning_effort)) {
+                invalid_prompt_option("server default reasoning effort is not supported by the "
+                                      "loaded chat template", "reasoning_effort",
+                                      "reasoning_effort_not_supported");
+            }
+            result.reasoning_effort = server.default_reasoning_effort;
+        }
+        return complete();
+    }
 
     const RequestedReasoningEffort requested = *request.reasoning_effort;
     const bool enables_thinking              = requested != RequestedReasoningEffort::None;

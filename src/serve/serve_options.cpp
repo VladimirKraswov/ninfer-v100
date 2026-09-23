@@ -80,6 +80,7 @@ std::string serve_usage_text(const char* argv0) {
            "[--response-store-max-records N] [--response-store-max-mib N] "
            "[--kv-dtype bf16|int8|fp8|nvfp4|k8v4] [--spec mtp|dflash|dflash2 --draft-tokens N] "
            "[--default-max-tokens N] [--default-thinking-budget N] "
+           "[--default-reasoning-effort low|medium|xhigh] "
            "[--vision] [--no-cuda-graph] [--no-prefix-reuse] "
            "[--lm-head-draft] [--no-thinking] [--preserve-thinking] [--cors] "
            "[--temperature F] [--top-p F] [--top-k N] [--min-p F] [--presence-penalty F] "
@@ -278,6 +279,17 @@ ServeOptions parse_serve_options(int argc, char** argv) {
                 throw std::invalid_argument("--default-thinking-budget is out of range");
             }
             options.default_thinking_budget = static_cast<std::uint32_t>(budget);
+        } else if (arg == "--default-reasoning-effort") {
+            const std::string value = require_value("--default-reasoning-effort");
+            if (value == "low") {
+                options.default_reasoning_effort = ReasoningEffort::Low;
+            } else if (value == "medium") {
+                options.default_reasoning_effort = ReasoningEffort::Medium;
+            } else if (value == "xhigh") {
+                options.default_reasoning_effort = ReasoningEffort::XHigh;
+            } else {
+                throw std::invalid_argument("--default-reasoning-effort must be low, medium, or xhigh");
+            }
         } else if (arg == "--vision") {
             options.enable_vision = true;
         } else if (arg == "--no-cuda-graph") {

@@ -982,8 +982,28 @@ int test_input_tokens_uses_shared_state_path() {
 
 } // namespace
 
+int test_thinking_budget_extension() {
+    Json body{{"model", "qwen"}, {"input", "hello"}, {"thinking_budget", 64}};
+    int failures = 0;
+    auto request = parse_openai_responses_create_request(body, limits());
+    failures += check(request.prompt.generation.thinking_budget == 64,
+                      "Responses thinking budget must reach the shared generation request");
+    body["thinking_budget"] = nullptr;
+    failures += check(!parse_openai_responses_create_request(body, limits())
+                          .prompt.generation.thinking_budget,
+                      "null Responses budget must preserve process default");
+    for (const Json bad : {Json(0), Json(-1), Json(true), Json(1.5), Json(4294967296ULL)}) {
+        body["thinking_budget"] = bad;
+        failures += check(api_error([&] { (void)parse_openai_responses_create_request(body, limits()); })
+                              .status == 400,
+                          "invalid Responses budget must fail before inference");
+    }
+    return failures;
+}
+
 int main() {
     int failures = 0;
+    failures += test_thinking_budget_extension();
     failures += test_basic_request_and_resolution();
     failures += test_budgets_and_nonsemantic_hints();
     failures += test_typed_items_and_cache_markers();

@@ -1,3 +1,6 @@
+> **V100 deployment fork:** [changes, qualification and operations](deploy/v100/README.md).
+> Based on geoffwatts/ninfer-v100; original upstream documentation follows.
+
 # NInfer
 
 > Up to 219 decode tok/s from Qwen 3.8 27B on a single V100.  With software NVFP4 on Volta.

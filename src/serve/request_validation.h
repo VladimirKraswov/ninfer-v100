@@ -4,6 +4,7 @@
 #include "serve/request_json.h"
 
 #include <cstddef>
+#include <cstdint>
 #include <optional>
 #include <string>
 #include <string_view>
@@ -13,6 +14,7 @@ namespace ninfer::serve {
 [[noreturn]] void bad_request(std::string message, std::string param = {}, std::string code = {});
 
 std::optional<int> optional_int(const RequestJson& object, const char* key);
+std::optional<std::uint32_t> parse_thinking_budget(const RequestJson& object);
 std::optional<double> optional_number(const RequestJson& object, const char* key);
 bool optional_bool(const RequestJson& object, const char* key, bool fallback);
 

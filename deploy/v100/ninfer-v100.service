@@ -1,0 +1,21 @@
+[Unit]
+Description=Qwen3.8 27B NVFP4 on Tesla V100 (NInfer)
+After=network-online.target nvidia-persistenced.service
+Wants=network-online.target
+RequiresMountsFor=/srv/ninfer-v100-lab
+
+[Service]
+Type=exec
+User=vladimir
+WorkingDirectory=/srv/ninfer-v100-lab
+ExecStartPre=+/usr/bin/nvidia-smi -pm 1
+ExecStartPre=+/usr/bin/nvidia-smi -ac 877,1530
+ExecStart=/srv/ninfer-v100-lab/engine/ninfer/build-v100/apps/ninfer-serve /srv/ninfer-v100-lab/models/nvfp4-v2/qwen3_8_27b_nvfp4.ninfer --model-id qwen-v100 --host 192.168.31.93 --port 8080 --max-context 262144 --kv-capacity 262144 --max-concurrency 1 --kv-dtype int8 --spec mtp --draft-tokens 4 --lm-head-draft --vision --preserve-thinking --default-max-tokens 32768 --default-reasoning-effort medium --default-thinking-budget 8192 --prefill-chunk 1024 --log-level info --request-log-jsonl /srv/ninfer-v100-lab/logs/ninfer-production.jsonl
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=60
+LimitNOFILE=65536
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target

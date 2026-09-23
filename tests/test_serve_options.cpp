@@ -284,6 +284,31 @@ int main() {
         check(explicit_effort.reasoning_effort == ninfer::ReasoningEffort::Low &&
                   explicit_effort.effective_reasoning_effort == ninfer::ReasoningEffort::Low,
               "explicit reasoning effort did not remain the effective effort");
+    const auto medium_default = parse({"ninfer-serve", "model.ninfer",
+                                       "--default-reasoning-effort", "medium"});
+    prompt_capabilities.reasoning_effort.medium = true;
+    failures += check(resolve_prompt_semantics(request, medium_default, prompt_capabilities)
+                          .effective_reasoning_effort == ninfer::ReasoningEffort::Low,
+                      "explicit request effort must override the server default");
+    request.reasoning_effort.reset();
+    failures += check(resolve_prompt_semantics(request, medium_default, prompt_capabilities)
+                          .reasoning_effort == ninfer::ReasoningEffort::Medium,
+                      "server default must reach the actual prompt template");
+    request.enable_thinking = false;
+    failures += check(!resolve_prompt_semantics(request, medium_default, prompt_capabilities)
+                           .effective_reasoning_effort,
+                      "server default must not enable disabled thinking");
+    request.enable_thinking.reset();
+    prompt_capabilities.reasoning_effort.medium = false;
+    bool unsupported_default_rejected = false;
+    try { (void)resolve_prompt_semantics(request, medium_default, prompt_capabilities); }
+    catch (const ApiException&) { unsupported_default_rejected = true; }
+    failures += check(unsupported_default_rejected,
+                      "unsupported process effort must not silently downgrade");
+    bool invalid_default_rejected = false;
+    try { (void)parse({"ninfer-serve", "model.ninfer", "--default-reasoning-effort", "high"}); }
+    catch (const std::invalid_argument&) { invalid_default_rejected = true; }
+    failures += check(invalid_default_rejected, "invalid process reasoning effort accepted");
     request.reasoning_effort.reset();
     failures +=
         check(resolve_prompt_semantics(request, configured, prompt_capabilities).preserve_thinking,

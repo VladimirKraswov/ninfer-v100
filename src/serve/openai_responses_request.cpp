@@ -1049,6 +1049,7 @@ ParsedPromptFields parse_prompt_fields(const Json& body, const RequestLimits& li
                     "parallel_tool_calls", "parallel_tool_calls_not_supported");
     }
     parse_reasoning(body, out.prompt);
+    out.prompt.generation.thinking_budget = parse_thinking_budget(body);
     parse_text(body);
     parse_truncation(body);
     parse_preserve_thinking(body, out.prompt);
@@ -1107,6 +1108,7 @@ void validate_common_top_level(const Json& body, bool create) {
                                                                   "input",
                                                                   "instructions",
                                                                   "max_output_tokens",
+                                                                  "thinking_budget",
                                                                   "max_tool_calls",
                                                                   "metadata",
                                                                   "model",
