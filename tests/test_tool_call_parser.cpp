@@ -580,6 +580,54 @@ int test_strict_structure_and_active_tool_set() {
     return failures;
 }
 
+int test_missing_parameter_open_recovers_only_unambiguous_required_string() {
+    const std::string malformed_bash =
+        "<tool_call>\n<function=bash>\n"
+        "date '+local: %H:%M:%S'; date -u '+utc: %H:%M:%S'\n"
+        "</parameter>\n</function>\n</tool_call>";
+    const auto recoverable = contract_from_definitions({tool_definition(
+        "bash",
+        Json{{"command", Json{{"type", "string"}}},
+             {"timeout", Json{{"type", "integer"}}}},
+        Json::array({"command"}))});
+    const auto repaired = fi::parse_qwen_tool_call_output(malformed_bash, 64, *recoverable);
+
+    int failures = 0;
+    failures += check(repaired.is_tool_call_response && repaired.content.empty() &&
+                          repaired.tool_calls.size() == 1 &&
+                          repaired.diagnostics.fallback_reason ==
+                              ninfer::ToolCallParseFallbackReason::None,
+                      "missing parameter-open was not repaired for one required string");
+    if (repaired.tool_calls.size() == 1) {
+        const Json args = Json::parse(repaired.tool_calls.front().arguments_json);
+        failures += check(args.size() == 1 &&
+                              args.at("command") ==
+                                  "date '+local: %H:%M:%S'; date -u '+utc: %H:%M:%S'",
+                          "implicit required parameter changed command bytes");
+    }
+
+    const auto two_required = contract_from_definitions({tool_definition(
+        "bash", Json{{"command", Json{{"type", "string"}}},
+                     {"workdir", Json{{"type", "string"}}}},
+        Json::array({"command", "workdir"}))});
+    failures += check_rejected(malformed_bash, *two_required,
+                               ninfer::ToolCallParseFallbackReason::MalformedStructure,
+                               "ambiguous required parameters were silently inferred");
+
+    const auto optional_only = contract_from_definitions({tool_definition(
+        "bash", Json{{"command", Json{{"type", "string"}}}})});
+    failures += check_rejected(malformed_bash, *optional_only,
+                               ninfer::ToolCallParseFallbackReason::MalformedStructure,
+                               "optional parameter was silently inferred");
+
+    const auto non_string = contract_from_definitions({tool_definition(
+        "bash", Json{{"timeout", Json{{"type", "integer"}}}}, Json::array({"timeout"}))});
+    failures += check_rejected(malformed_bash, *non_string,
+                               ninfer::ToolCallParseFallbackReason::MalformedStructure,
+                               "non-string required parameter was silently inferred");
+    return failures;
+}
+
 int test_name_limits_and_non_strict_omissions() {
     const std::string name(128, 'a');
     const std::string text          = tool_call(name);
@@ -750,6 +798,7 @@ int main() {
     failures += test_schema_mismatches_remain_structured();
     failures += test_unsupported_schema_uses_legacy_policy();
     failures += test_strict_structure_and_active_tool_set();
+    failures += test_missing_parameter_open_recovers_only_unambiguous_required_string();
     failures += test_name_limits_and_non_strict_omissions();
     failures += test_conflicting_duplicate_tool_contracts_use_legacy_normalization();
     failures += test_all_or_nothing_structural_commit();

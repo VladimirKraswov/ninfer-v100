@@ -178,10 +178,19 @@ Contract::Tool compile_tool_contract(const Json& definition) {
     const auto properties = schema->find("properties");
     if (properties == schema->end() || !properties->is_object()) { return contract; }
 
+    const auto required = schema->find("required");
+    const auto parameter_is_required = [&](std::string_view parameter_name) {
+        if (required == schema->end() || !required->is_array()) { return false; }
+        return std::any_of(required->begin(), required->end(), [&](const Json& item) {
+            return item.is_string() && item.get_ref<const std::string&>() == parameter_name;
+        });
+    };
+
     contract.parameters.reserve(properties->size());
     for (const auto& [parameter_name, property] : properties->items()) {
         Contract::Parameter parameter;
-        parameter.name = parameter_name;
+        parameter.name     = parameter_name;
+        parameter.required = parameter_is_required(parameter_name);
         if (compile_schema_types(property, parameter.types)) {
             parameter.policy = NormalizationPolicy::DeclaredTypes;
         }
@@ -195,7 +204,7 @@ bool same_contract(const Contract::Tool& lhs, const Contract::Tool& rhs) {
     for (std::size_t i = 0; i < lhs.parameters.size(); ++i) {
         const Contract::Parameter& left  = lhs.parameters[i];
         const Contract::Parameter& right = rhs.parameters[i];
-        if (left.name != right.name || left.policy != right.policy ||
+        if (left.name != right.name || left.policy != right.policy || left.required != right.required ||
             left.types.bits != right.types.bits) {
             return false;
         }
@@ -468,9 +477,53 @@ private:
         for (;;) {
             skip_format_whitespace(text_, pos);
             if (consume(pos, kFunctionClose)) { return FallbackReason::None; }
+            if (!starts_with_at(text_, pos, kParamOpen)) {
+                const FallbackReason recovery = parse_implicit_required_parameter(pos, call);
+                if (recovery != FallbackReason::None) { return recovery; }
+                continue;
+            }
             const FallbackReason failure = parse_parameter(pos, call);
             if (failure != FallbackReason::None) { return failure; }
         }
+    }
+
+    // Qwen occasionally emits a complete </parameter> close but omits only the opening
+    // <parameter=name> tag. Recover that single defect only when the request schema makes the
+    // name and representation unambiguous: exactly one required, declared string parameter.
+    // Anything broader remains a byte-preserving malformed-structure fallback.
+    FallbackReason parse_implicit_required_parameter(std::size_t& pos, RawToolCall& call) const {
+        const Contract::Tool* tool = find_tool_contract(contract_, call.name);
+        if (tool == nullptr || !tool->unambiguous || !call.parameters.empty()) {
+            return FallbackReason::MalformedStructure;
+        }
+
+        const Contract::Parameter* inferred = nullptr;
+        for (const Contract::Parameter& parameter : tool->parameters) {
+            if (!parameter.required) { continue; }
+            if (inferred != nullptr) { return FallbackReason::MalformedStructure; }
+            inferred = &parameter;
+        }
+        if (inferred == nullptr || inferred->policy != NormalizationPolicy::DeclaredTypes ||
+            !admits_type(inferred->types, SchemaType::String)) {
+            return FallbackReason::MalformedStructure;
+        }
+
+        const std::size_t value_end = text_.find(kParamClose, pos);
+        if (value_end == std::string_view::npos) { return FallbackReason::MalformedStructure; }
+        const std::size_t nested_open = text_.find(kParamOpen, pos);
+        if (nested_open != std::string_view::npos && nested_open < value_end) {
+            return FallbackReason::MalformedStructure;
+        }
+        std::size_t after = value_end + kParamClose.size();
+        skip_format_whitespace(text_, after);
+        if (!starts_with_at(text_, after, kFunctionClose)) {
+            return FallbackReason::MalformedStructure;
+        }
+
+        call.parameters.push_back(RawParameter{
+            .name = inferred->name, .value = text_.substr(pos, value_end - pos)});
+        pos = value_end + kParamClose.size();
+        return FallbackReason::None;
     }
 
     FallbackReason parse_parameter(std::size_t& pos, RawToolCall& call) const {

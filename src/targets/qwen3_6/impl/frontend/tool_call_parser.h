@@ -40,6 +40,7 @@ struct ToolCallOutputContract {
         std::string name;
         NormalizationPolicy policy = NormalizationPolicy::Legacy;
         TypeSet types;
+        bool required = false;
     };
 
     struct Tool {

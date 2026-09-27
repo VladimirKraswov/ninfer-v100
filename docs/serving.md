@@ -841,7 +841,11 @@ sequences. Pretty values use readable units and rounded rates; use the independe
 complete fields and full precision. Operational records never contain prompts, generated text,
 request bodies, credentials, or arbitrary client error messages.
 If a tool marker is returned to text because its structure or tool identity cannot be represented,
-Serve emits one warning with only the failure classification, never the generated markup.
+Serve emits one warning with only the failure classification, never the generated markup. One
+bounded recovery is permitted: when the model emits a complete `</parameter>` close but omits its
+opening tag, Serve infers the name only if the active schema has exactly one required declared
+string parameter. Ambiguous, optional-only, non-string, nested, and otherwise malformed regions
+still fall back byte-for-byte.
 
 ## Structured request log
 
