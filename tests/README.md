@@ -69,6 +69,52 @@ cmake --build build --parallel --target ninfer_sampling_test
 ctest --test-dir build -R ninfer_sampling_test --output-on-failure
 ```
 
+The opt-in V100 long-attention qualification uses the independent FP64 softmax oracle and the
+registered storage profiles with a BF16 output-rounding floor:
+
+```bash
+./build-v100/tests/ninfer_softmax_attention_test --volta-long-int8-only
+./build-v100/tests/ninfer_softmax_attention_test --volta-prefill-only
+./build-v100/tests/ninfer_softmax_attention_test --volta-prefill-fallback-only
+./build-v100/tests/ninfer_softmax_attention_test --volta-prefill-tail-only
+./build-v100/tests/ninfer_softmax_attention_test --volta-prefill-regression-only
+```
+
+The decode subset checks every output at widths 1/3/5/7/8 and 32K/128K/near-256K, including
+fragmented pages, graph replay and loose envelopes crossing policy boundaries. The prefill subset
+checks BF16 and INT8 cache with 64/65/128/1024 queries, nonaligned key tails, nonzero per-head value
+means, changing block maxima, and graph fallback. T1024 covers 128K and near-256K contexts; T65
+checks an incomplete packed query tile. Its 32K/64-query cases check every output; larger cases
+check first, middle and last queries against every visible key and every query head, explicitly
+marked in case labels.
+The focused prefill fallback subset checks eager T64/T128 at 32K/128K/near-256K with exact
+envelopes for BF16 and INT8, sampling the same three complete query rows. All cases have biased
+values; alternating nearly uniform logits and changing block maxima cover accumulation and
+online rescaling without repeating the T1024 qualification.
+The historical fallback-subset name does not force fallback: exact-envelope INT8
+cases may use packed prefill with the current 64–1024 gate, while graph cases
+retain fallback. The tail subset adds four INT8-G64 cases, T127/T256/T512 at 32K
+and T877 at 128K, with biased values and changing maxima. It samples first,
+middle and last queries, covering every head, output component and visible key.
+These tests require a GPU and several GiB of host memory; they are not added to the default suite.
+
+Causal attention compares every observed BF16 component with the unrounded independent FP64
+answer. The current rule adds the output format's unavoidable half-ULP: for reference component
+`r[i]`, the gross bound is `profile.absolute + max(profile.relative * max(abs(r)), halfULP(r[i]))`.
+The raw relative-L2 limit is `max(profile.L2, norm(halfULP(r)) / max(norm(r), 1e-30))`. BF16 subnormal spacing
+is included. These rules apply to every causal attention storage profile, width, context, and
+route; profile constants and FP64 references are unchanged. The decision envelope
+has expanded, so this is a changed acceptance criterion, not unchanged tolerances.
+
+This matters at output rounding boundaries. A measured FP32 prefill result of 4.01553488 for
+reference approximately 4.01617 has arithmetic error about 0.000635, within the existing absolute
+budget 0.001, but rounds to BF16 4.0 across the midpoint 4.015625. The former gross threshold could
+also reject correctly rounded BF16 for other valid inputs. The CPU-only
+`ninfer_softmax_attention_criterion_test` verifies correct rounding at multiple signed binade
+boundaries and rejection of approximately 5% accumulator drift, even when sparse enough to pass
+relative-L2 alone. `OP_ERROR_STATS kind=bf16_output_reduction` reports raw FP64 errors, the profile
+and rounding L2 limits, and the maximum ratio against the per-element gross bound.
+
 Enable uniform floating-point error records when establishing or reviewing an Op criterion:
 
 ```bash

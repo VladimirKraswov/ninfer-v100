@@ -52,14 +52,21 @@ void naive_dense_softmax_attention(ops::AttentionHeadGeometry geometry, int quer
                     denominator += score;
                 }
             }
-            for (int d = 0; d < geometry.head_dim; ++d) {
-                double numerator = 0.0;
-                for (int key = 0; key < key_tokens; ++key) {
-                    const double weight = scores[static_cast<std::size_t>(key)];
-                    if (weight == -std::numeric_limits<double>::infinity()) continue;
-                    numerator += weight * value_value(d, kv_head, key);
+            // Visit a represented V row contiguously. Each component still accumulates keys
+            // in exactly the same order, but long-context oracles avoid rereading a GiB-scale
+            // cache once per head dimension.
+            std::vector<double> numerator(static_cast<std::size_t>(geometry.head_dim), 0.0);
+            for (int key = 0; key < key_tokens; ++key) {
+                const double weight = scores[static_cast<std::size_t>(key)];
+                if (weight == -std::numeric_limits<double>::infinity()) continue;
+                for (int d = 0; d < geometry.head_dim; ++d) {
+                    numerator[static_cast<std::size_t>(d)] += weight * value_value(d, kv_head, key);
                 }
-                store(d, query_head, query, denominator > 0.0 ? numerator / denominator : 0.0);
+            }
+            for (int d = 0; d < geometry.head_dim; ++d) {
+                store(d, query_head, query,
+                      denominator > 0.0 ? numerator[static_cast<std::size_t>(d)] / denominator
+                                        : 0.0);
             }
         }
     }

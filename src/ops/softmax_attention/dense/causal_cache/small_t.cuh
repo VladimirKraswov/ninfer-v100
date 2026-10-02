@@ -78,8 +78,9 @@ __device__ __forceinline__ bool causal_valid_q_head(int kv_head, int q_head) {
 }
 
 template <typename Geometry>
-__device__ __forceinline__ int causal_small_t_default_splits(int window) {
-    int target_keys_per_split = 480 / Geometry::SmallTSplitScale;
+__device__ __forceinline__ int causal_small_t_default_splits(
+    int window, int long_context_keys_per_split = 480) {
+    int target_keys_per_split = long_context_keys_per_split / Geometry::SmallTSplitScale;
     if (window <= 4096) {
         target_keys_per_split = 64 / Geometry::SmallTSplitScale;
     } else if (window <= 8198) {
@@ -95,7 +96,8 @@ __device__ __forceinline__ int causal_small_t_default_splits(int window) {
 
 template <typename Geometry, bool Int8>
 __device__ __forceinline__ int causal_small_t_active_splits(int window, int launch_capacity,
-                                                            int tokens) {
+                                                            int tokens,
+                                                            int long_context_keys_per_split = 480) {
     if (window <= 0) { return launch_capacity; }
     int splits = 0;
     if constexpr (Int8) {
@@ -111,7 +113,7 @@ __device__ __forceinline__ int causal_small_t_active_splits(int window, int laun
             splits             = splits > kMin ? splits : kMin;
             splits             = splits < kMax ? splits : kMax;
         } else {
-            splits = causal_small_t_default_splits<Geometry>(window);
+            splits = causal_small_t_default_splits<Geometry>(window, long_context_keys_per_split);
         }
     } else {
         splits = causal_small_t_default_splits<Geometry>(window);
@@ -214,7 +216,7 @@ __launch_bounds__(256) __global__ void causal_attention_small_t_reduce_output_ke
     const float* partial_acc, const float* partial_m, const float* partial_l,
     const std::int32_t* positions, const std::int32_t* valid_columns, std::int32_t tokens,
     std::int32_t full_width, std::int32_t column_begin, std::int32_t batch_size,
-    std::int32_t split_count, __nv_bfloat16* out) {
+    std::int32_t split_count, __nv_bfloat16* out, std::int32_t long_context_keys_per_split) {
     static_assert(DChunk > 0 && DChunk <= kCausalHeadDim);
 
     const int q_head      = static_cast<int>(blockIdx.x);
@@ -261,7 +263,8 @@ __launch_bounds__(256) __global__ void causal_attention_small_t_reduce_output_ke
 
     const int window = last_pos + 1;
     const int active_split_count =
-        causal_small_t_active_splits<Geometry, Int8>(window, split_count, tokens);
+        causal_small_t_active_splits<Geometry, Int8>(window, split_count, tokens,
+                                                    long_context_keys_per_split);
 
     __shared__ float weights[Geometry::SmallTMaximumSplits], warp_sums[8], scalars[2];
     const float head_l =

@@ -7,8 +7,23 @@ int run_softmax_attention_nvfp4_tests();
 int run_softmax_attention_k8v4_tests();
 int run_softmax_attention_plain_and_packed_tests();
 int run_softmax_attention_context_tests();
+int run_softmax_attention_volta_long_int8_tests();
+int run_softmax_attention_volta_prefill_tests();
+int run_softmax_attention_volta_prefill_fallback_tests();
+int run_softmax_attention_volta_prefill_regression_test();
+int run_softmax_attention_volta_prefill_tail_tests();
 
 int main(int argc, char** argv) {
+    if (argc == 2 && std::string_view(argv[1]) == "--volta-long-int8-only")
+        return run_softmax_attention_volta_long_int8_tests();
+    if (argc == 2 && std::string_view(argv[1]) == "--volta-prefill-only")
+        return run_softmax_attention_volta_prefill_tests();
+    if (argc == 2 && std::string_view(argv[1]) == "--volta-prefill-fallback-only")
+        return run_softmax_attention_volta_prefill_fallback_tests();
+    if (argc == 2 && std::string_view(argv[1]) == "--volta-prefill-regression-only")
+        return run_softmax_attention_volta_prefill_regression_test();
+    if (argc == 2 && std::string_view(argv[1]) == "--volta-prefill-tail-only")
+        return run_softmax_attention_volta_prefill_tail_tests();
     if (argc == 2 && std::string_view(argv[1]) == "--dflash2-only")
         return run_softmax_attention_dflash2_tests();
     if (argc == 2 && std::string_view(argv[1]) == "--nvfp4-only") {
@@ -19,7 +34,10 @@ int main(int argc, char** argv) {
     }
     if (argc != 1) {
         std::cerr
-            << "usage: ninfer_softmax_attention_test [--dflash2-only|--nvfp4-only|--k8v4-only]\n";
+            << "usage: ninfer_softmax_attention_test "
+               "[--dflash2-only|--nvfp4-only|--k8v4-only|--volta-long-int8-only|"
+               "--volta-prefill-only|--volta-prefill-fallback-only|--volta-prefill-regression-only|"
+               "--volta-prefill-tail-only]\n";
         return 2;
     }
     const int causal = run_softmax_attention_causal_cache_tests();

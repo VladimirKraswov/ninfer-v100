@@ -16,16 +16,73 @@
 
 #include <cstdint>
 #include <algorithm>
+#include <array>
+#include <cstdlib>
+#include <cstdio>
 #include <stdexcept>
 
 namespace ninfer::ops::detail {
 namespace {
 
+// Private, process-fixed laboratory override. It changes only the partition of the same
+// represented INT8 attention problem. Keeping the value in kernel arguments makes graph
+// replays independent of host environment changes and avoids mutable device-global state.
+template <typename Geometry>
+std::int32_t long_context_keys_per_split(KvCacheStorage storage) {
+#ifdef NINFER_VOLTA_BUILD
+    if constexpr (Geometry::QHeads == 24) {
+        if (storage == KvCacheStorage::Int8Group64) {
+            static const std::int32_t keys = [] {
+                const char* text = std::getenv("NINFER_V100_INT8_SPLIT_KEYS");
+                if (text == nullptr || *text == '\0') { return 480; }
+                char* end = nullptr;
+                const long parsed = std::strtol(text, &end, 10);
+                constexpr std::array<long, 11> allowed{
+                    128, 192, 256, 384, 480, 512, 640, 768, 1024, 1536, 2048};
+                if (*end != '\0' || std::find(allowed.begin(), allowed.end(), parsed) ==
+                                        allowed.end()) {
+                    throw std::invalid_argument(
+                        "NINFER_V100_INT8_SPLIT_KEYS must be one of "
+                        "128,192,256,384,480,512,640,768,1024,1536,2048");
+                }
+                std::fprintf(stderr, "Volta INT8 long-context split tuning: %ld keys/split\n",
+                             parsed);
+                return static_cast<std::int32_t>(parsed);
+            }();
+            return keys;
+        }
+    }
+#else
+    (void)storage;
+#endif
+    return 480;
+}
+
+#ifdef NINFER_VOLTA_BUILD
+bool long_context_qpn_tail_enabled() {
+    // Private laboratory candidate; resolve once so graph replay cannot change
+    // its kernel topology when the host environment changes.
+    static const bool enabled = [] {
+        const char* value = std::getenv("NINFER_V100_INT8_QPN_TAIL");
+        if (value == nullptr || *value == '\0' || (value[0] == '0' && value[1] == '\0')) {
+            return false;
+        }
+        if (value[0] != '1' || value[1] != '\0') {
+            throw std::invalid_argument("NINFER_V100_INT8_QPN_TAIL must be 0 or 1");
+        }
+        std::fprintf(stderr, "Volta INT8 long-context T7/T8 QPN tail candidate enabled\n");
+        return true;
+    }();
+    return enabled;
+}
+#endif
+
 // Supplies an upper bound for the device-side active-split policy over one explicit execution
 // envelope. Eager calls normally pass an exact window; graph calls pass their target-private
 // replay interval. The dtype-aware wrapper below adds the measured INT8 specializations.
 template <typename Geometry>
-std::int32_t causal_small_t_split_upper_bound(std::int32_t window) {
+std::int32_t causal_small_t_split_upper_bound(std::int32_t window,
+                                              std::int32_t long_keys_per_split) {
     if (window <= 0) { return Geometry::SmallTMaximumSplits; }
 
     constexpr std::int32_t kMinSplits = 4 * Geometry::SmallTSplitScale;
@@ -42,7 +99,9 @@ std::int32_t causal_small_t_split_upper_bound(std::int32_t window) {
     include_tier(4096, 64 / Geometry::SmallTSplitScale);
     if (window > 4096) { include_tier(8198, 128 / Geometry::SmallTSplitScale); }
     if (window > 8198) { include_tier(16390, 256 / Geometry::SmallTSplitScale); }
-    if (window > 16390) { include_tier(window, 480 / Geometry::SmallTSplitScale); }
+    if (window > 16390) {
+        include_tier(window, long_keys_per_split / Geometry::SmallTSplitScale);
+    }
 
     return (splits < Geometry::SmallTMaximumSplits) ? splits : Geometry::SmallTMaximumSplits;
 }
@@ -74,7 +133,8 @@ std::int32_t causal_small_t_split_count(std::int32_t window, std::int32_t tokens
         const std::int32_t clamped  = (splits > kMin) ? splits : kMin;
         return (clamped < kMax) ? clamped : kMax;
     }
-    return causal_small_t_split_upper_bound<Geometry>(window);
+    return causal_small_t_split_upper_bound<Geometry>(
+        window, long_context_keys_per_split<Geometry>(storage));
 }
 
 template <typename Geometry>
@@ -182,9 +242,16 @@ void launch_tc_partial_i8(const Tensor& q, CacheInput input, const Tensor& pos, 
                 cache.block_tables.ne[0], invocation.width, invocation.full_width,
                 invocation.column_begin, logical_capacity, scale,
                 static_cast<float*>(partial_acc.data), static_cast<float*>(partial_m.data),
-                static_cast<float*>(partial_l.data));
+                static_cast<float*>(partial_l.data),
+                long_context_keys_per_split<Geometry>(cache.storage));
     };
-    if constexpr (TokenTile == 6 && Geometry::GroupSize == 6) {
+    if constexpr ((TokenTile == 7 || TokenTile == 8) && Geometry::GroupSize == 6) {
+        if (implementation_window >= 16391 && long_context_qpn_tail_enabled()) {
+            launch_volta.template operator()<6>();
+        } else {
+            launch_volta.template operator()<4>();
+        }
+    } else if constexpr (TokenTile == 6 && Geometry::GroupSize == 6) {
         // Below the 16K graph envelope the fifth-warp setup costs more than the tail pass it
         // replaces; the next envelope up is where sharing the K/V walk wins.
         constexpr std::int32_t kCompactTailMinWindow = 16391;
@@ -409,7 +476,8 @@ void causal_attention_small_t_launch_for(const Tensor& q, CacheInput input, cons
                   ? static_cast<const std::int32_t*>(invocation.valid_columns->data)
                   : nullptr,
             invocation.width, invocation.full_width, invocation.column_begin, invocation.batch_size,
-            splits, static_cast<__nv_bfloat16*>(out.data));
+            splits, static_cast<__nv_bfloat16*>(out.data),
+            long_context_keys_per_split<Geometry>(cache.storage));
     };
     const auto launch_profile = [&]<bool Int8, bool MultiBatch, bool Masked>() {
         if (invocation.column_begin == 0)

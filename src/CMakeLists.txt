@@ -343,6 +343,10 @@ if(CMAKE_CUDA_ARCHITECTURES STREQUAL "70")
     ops/linear_swiglu/nvfp4/nvfp4_linear_swiglu_qpn_split.cu
     ops/linear_swiglu/q4/q4_linear_swiglu_cutlass_sm70.cu
     ops/launcher/gqa_attention_volta_flash.cu)
+  if(NINFER_VOLTA_PACKED_PREFILL)
+    target_sources(ninfer_ops PRIVATE ops/launcher/volta_packed_prefill.cu)
+    target_compile_definitions(ninfer_ops PRIVATE NINFER_VOLTA_PACKED_PREFILL=1)
+  endif()
   set_source_files_properties(
     ops/launcher/gqa_attention_volta_flash.cu
     TARGET_DIRECTORY ninfer_ops

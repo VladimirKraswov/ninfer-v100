@@ -12,9 +12,9 @@ performance envelope.
 
 | file | origin | change |
 |---|---|---|
-| `mma.cuh` | `ggml/src/ggml-cuda/mma.cuh` | none (byte-for-byte) |
+| `mma.cuh` | `ggml/src/ggml-cuda/mma.cuh` | added Volta FP32 PV MMA overload |
 | `cp-async.cuh` | `ggml/src/ggml-cuda/cp-async.cuh` | none (byte-for-byte) |
-| `fattn-mma-f16.cuh` | `ggml/src/ggml-cuda/fattn-mma-f16.cuh` | truncated + one config case, see below |
+| `fattn-mma-f16.cuh` | `ggml/src/ggml-cuda/fattn-mma-f16.cuh` | truncated, Volta config and FP32 PV, see below |
 | `fattn-stream-k.cuh` | `ggml/src/ggml-cuda/fattn-common.cuh` lines 721-971 | extracted verbatim |
 | `common.cuh` | shim, not upstream | see below |
 
@@ -23,8 +23,8 @@ performance envelope.
 **`common.cuh` is ours.** Upstream's is 1,669 lines and pulls in `ggml.h`,
 `ggml-impl.h`, `ggml-cuda.h` and `ggml-common.h`. The device side of the kernel
 needs about a dozen symbols from it, none involving a ggml type. Providing them
-under the upstream file name is what lets `mma.cuh`, `cp-async.cuh` and the
-kernel body stay byte-for-byte. Definitions inside are copied verbatim from
+under the upstream file name avoids dependencies on the full ggml runtime.
+Definitions inside are copied verbatim from
 upstream except where a comment marks otherwise.
 
 **`fattn-mma-f16.cuh` is truncated at line 1893**, dropping the host-side
@@ -43,6 +43,19 @@ making the combine buffer 66 KB and capping the kernel at 1 block/SM on a
 same halves shared memory to 35,072 B and doubles occupancy to 2 blocks/SM,
 measured, with no change in numerical accuracy. It sits under upstream's own
 `// TODO tune specifically for Volta`.
+
+**FP32 PV on Volta.** The original FP16 numerator accumulates substantial error
+on long contexts when V has a nonzero mean. The Volta PV MMA now uses the existing
+FP32 accumulator layout, with FP32 rescaling for each query row and FP32 staging
+through the warp and stream-K reduction. The combine pass handles half as many
+value pairs to fit the existing shared-memory allocation; it does not cast the
+numerator back to FP16 before normalization. Q, K, V and softmax probabilities
+remain FP16 tensor-core operands. The FP32 denominator sums the same represented
+FP16 probabilities consumed by PV, avoiding a bias proportional to the value mean
+from normalizing rounded probabilities by their unrounded mass. Maxima and online
+rescaling remain FP32. `--volta-prefill-only` qualifies this route
+against an independent FP64 oracle, including biased values, graph replay with
+a loose key envelope, and changing block maxima.
 
 ## Updating
 

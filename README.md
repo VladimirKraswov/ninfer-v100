@@ -1,9 +1,10 @@
 > **V100 deployment fork:** [changes, qualification and operations](deploy/v100/README.md).
+> **October 2026 qualified profile:** [29% lower request latency at ~229K input; measured tradeoffs and quality checks](deploy/v100/results/2026-10-03/README.md).
 > Based on geoffwatts/ninfer-v100; original upstream documentation follows.
 
 # NInfer
 
-> Deployment measured on V100-SXM2-32GB with 262144 context and Vision: about 82 decode tok/s at 1267 input tokens and 66 at 29961 input tokens. [Qualification and limits](deploy/v100/results/2026-09-23/README.md).
+> Historical September campaign on V100-SXM2-32GB with 262144 context and Vision: about 82 decode tok/s at 1267 input tokens and 66 at 29961 input tokens. [Artifact, protocol and limits](deploy/v100/results/2026-09-23/README.md).
 
 NInfer is a from-scratch C++/CUDA inference engine optimized for selected Qwen checkpoints on NVIDIA Tesla V100.
 
@@ -23,7 +24,14 @@ Artifacts contain the exact model weights, tokenizer, chat template, and require
 
 ## Performance
 
-Our deployed profile and comparative measurements are documented in [V100 qualification](deploy/v100/results/2026-09-23/README.md). It retains the full 262144 context and Vision.
+The [October optimization report](deploy/v100/results/2026-10-03/README.md) records
+matched Huihui Qwen3.8-27B measurements at 262144 context with Vision enabled:
+6/6 quality PASS, 29.0% lower request latency at about 229K input, and a 6.4%
+request-latency regression at 16K. It includes numerical qualification and the
+limits of the three fixed-output performance pairs. Publication and installation
+of this qualified profile remain pending. The
+[September deployment qualification](deploy/v100/results/2026-09-23/README.md)
+is retained as a historical campaign with its own artifact and protocol.
 
 The following performance section is an **upstream reference**, not a result reproduced by this deployment. Upstream reports **218.98 decode tok/s** at K=1 with 99.2% MTP acceptance on V100-PCIe-32GB. Different prompts, acceptance rates, context and runtime settings make that peak unsuitable as an expectation for our coding workload.
 
@@ -103,16 +111,16 @@ mean output tokens per round over ten measured rounds after two warmups.
 
 ## Quick start
 
-NInfer requires 64-bit Linux, a Tesla V100 with CUDA Toolkit 12.8, CMake 3.28 or newer, a C++20
+This deployment fork uses 64-bit Linux, a Tesla V100 with CUDA Toolkit 12.9, CMake 3.28 or newer, a C++20
 host compiler, Ninja, `pkg-config`, FFmpeg
 development libraries (`libavformat >= 60`, `libavcodec >= 60`, `libavutil >= 58`, and
 `libswscale >= 7`), and `libcurl >= 7.85`. This port builds for `sm_70`.
 
-Select CUDA 12.8 and Volta explicitly:
+Select CUDA 12.9 and Volta explicitly:
 
 ```bash
 cmake -S . -B build-v100 -G Ninja -DCMAKE_BUILD_TYPE=Release \
-  -DCMAKE_CUDA_COMPILER=/usr/local/cuda-12.8/bin/nvcc \
+  -DCMAKE_CUDA_COMPILER=/usr/local/cuda-12.9/bin/nvcc \
   -DCMAKE_CUDA_ARCHITECTURES=70
 cmake --build build-v100 -j
 ```

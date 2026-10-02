@@ -755,6 +755,12 @@ static __device__ __forceinline__ void flash_attn_ext_f16_iter(
                     const int KQ_idx = l % 2;
 #endif // defined(AMD_WMMA_AVAILABLE) || defined(AMD_MFMA_AVAILABLE)
                     KQ_C[k0/(np*T_C_KQ::I)].x[l] = expf(KQ_C[k0/(np*T_C_KQ::I)].x[l] - KQ_max_new[KQ_idx]);
+#if defined(VOLTA_MMA_AVAILABLE)
+                    // PV consumes FP16 P. Sum exactly that represented mass in FP32,
+                    // preserving constant-V normalization even when rounded P has a
+                    // systematic bias. The following get_half2 cast is then exact.
+                    KQ_C[k0/(np*T_C_KQ::I)].x[l] = __half2float(__float2half_rn(KQ_C[k0/(np*T_C_KQ::I)].x[l]));
+#endif
                     KQ_rowsum_add[KQ_idx] += KQ_C[k0/(np*T_C_KQ::I)].x[l];
                 } else {
                     KQ_C[k0/(np*T_C_KQ::I)].x[l] = 0.0f;
@@ -848,6 +854,10 @@ static __device__ __forceinline__ void flash_attn_ext_f16_iter(
                     const int KQ_idx = (l/2) % 2;
 #endif // defined(AMD_WMMA_AVAILABLE) || defined(AMD_MFMA_AVAILABLE)
                     KQ_C[(k0/(np*T_C_KQ::J))].x[l] = expf(KQ_C[(k0/(np*T_C_KQ::J))].x[l] - KQ_max_new[KQ_idx]);
+#if defined(VOLTA_MMA_AVAILABLE)
+                    // Match the emitted FP16 PV probabilities; retain the sum in FP32.
+                    KQ_C[(k0/(np*T_C_KQ::J))].x[l] = __half2float(__float2half_rn(KQ_C[(k0/(np*T_C_KQ::J))].x[l]));
+#endif
                     KQ_rowsum_add[KQ_idx] += KQ_C[(k0/(np*T_C_KQ::J))].x[l];
                 } else {
                     KQ_C[(k0/(np*T_C_KQ::J))].x[l] = 0.0f;
@@ -914,13 +924,13 @@ static __device__ __forceinline__ void flash_attn_ext_f16_iter(
             }
         }
 #else // Volta
-        const half2 KQ_max_scale_h2 = make_half2(
-            KQ_max_scale[(threadIdx.x / 2) % 2], KQ_max_scale[(threadIdx.x / 2) % 2]);
 #pragma unroll
-        for (int i = 0; i < (DV/2)/T_C_VKQ::J; ++i) {
+        for (int i = 0; i < DV/T_C_VKQ::J; ++i) {
 #pragma unroll
             for (int l = 0; l < T_C_VKQ::ne; ++l) {
-                VKQ_C[i].x[l] *= KQ_max_scale_h2;
+                // FP32 Volta fragments contain two query rows per thread,
+                // selected by bit 1 of the accumulator element, like KQ_C.
+                VKQ_C[i].x[l] *= KQ_max_scale[(l / 2) % 2];
             }
         }
 #endif // defined(TURING_MMA_AVAILABLE)
@@ -1002,7 +1012,7 @@ static __device__ __forceinline__ void flash_attn_ext_f16_iter(
             }
         }
 #else // Volta
-        constexpr int i0_stride = 2*T_C_VKQ::J;
+        constexpr int i0_stride = T_C_VKQ::J;
 #pragma unroll
         for (int i_VKQ_0 = i0_start; i_VKQ_0 < i0_stop; i_VKQ_0 += i0_stride) {
             static_assert(nbatch_fa % (np*T_A_VKQ::I) == 0, "bad loop size");
@@ -1117,7 +1127,7 @@ template<int DV, int ncols> struct mma_tile_sizes {
     using T_C_KQ  = tile<32,  8, float, DATA_LAYOUT_I_MAJOR>;          // column-major
     using T_A_VKQ = tile< 8,  4, half2, DATA_LAYOUT_J_MAJOR_MIRRORED>; // column-major
     using T_B_VKQ = tile<32,  4, half2, DATA_LAYOUT_I_MAJOR>;          // column-major
-    using T_C_VKQ = tile<32,  4, half2, DATA_LAYOUT_I_MAJOR>;          // column-major
+    using T_C_VKQ = tile<32,  8, float, DATA_LAYOUT_I_MAJOR>;          // column-major
 };
 #endif // defined(TURING_MMA_AVAILABLE)
 
@@ -1164,7 +1174,16 @@ static __device__ __forceinline__ void flash_attn_ext_f16_process_tile(
     constexpr int  nbatch_fa       = ggml_cuda_fattn_mma_get_nbatch_fa     (DKQ, DV, ncols);
     constexpr int  nbatch_K2       = ggml_cuda_fattn_mma_get_nbatch_K2     (DKQ, DV, ncols);
     constexpr int  nbatch_V2       = ggml_cuda_fattn_mma_get_nbatch_V2     (DKQ, DV, ncols);
-    constexpr int  nbatch_combine  = ggml_cuda_fattn_mma_get_nbatch_combine(DKQ, DV, ncols);
+    // The host reserves the configured number of 32-bit words per combine row.
+    // On Volta retain FP32 PV values through shared memory: combine half as many
+    // float2 values per pass, preserving the allocation and its occupancy bound.
+#if defined(VOLTA_MMA_AVAILABLE) && !defined(TURING_MMA_AVAILABLE)
+    constexpr int combine_words_per_pair = 2;
+#else
+    constexpr int combine_words_per_pair = 1;
+#endif
+    constexpr int  nbatch_combine  = ggml_cuda_fattn_mma_get_nbatch_combine(DKQ, DV, ncols) / combine_words_per_pair;
+    static_assert(nbatch_combine % 4 == 0, "bad combine pair count");
     constexpr bool Q_in_reg        = ggml_cuda_fattn_mma_get_Q_in_reg      (DKQ, DV, ncols);
     constexpr int  nstages         = ggml_cuda_fattn_mma_get_nstages       (DKQ, DV, ncols1, ncols2);
 
@@ -1194,7 +1213,7 @@ static __device__ __forceinline__ void flash_attn_ext_f16_process_tile(
 #elif defined(AMD_WMMA_AVAILABLE) || defined(AMD_MFMA_AVAILABLE)
     T_C_VKQ VKQ_C[                                     DV/(2*T_C_VKQ::J)];
 #else // Volta
-    T_C_VKQ VKQ_C[                                     DV/(2*T_C_VKQ::J)];
+    T_C_VKQ VKQ_C[                                     DV/T_C_VKQ::J];
 #endif // defined(TURING_MMA_AVAILABLE)
 
     float KQ_rowsum[cols_per_thread] = {0.0f};
@@ -1419,13 +1438,11 @@ static __device__ __forceinline__ void flash_attn_ext_f16_process_tile(
             }
         }
 #else // Volta
-        const int col = (threadIdx.x / 2) % 2;
-        const half2 KQ_max_scale_h2 = make_half2(KQ_max_scale[col], KQ_max_scale[col]);
 #pragma unroll
-        for (int i = 0; i < (DV/2)/T_C_VKQ::J; ++i) {
+        for (int i = 0; i < DV/T_C_VKQ::J; ++i) {
 #pragma unroll
             for (int l = 0; l < T_C_VKQ::ne; ++l) {
-                VKQ_C[i].x[l] *= KQ_max_scale_h2;
+                VKQ_C[i].x[l] *= KQ_max_scale[(l / 2) % 2];
             }
         }
 #endif // defined(TURING_MMA_AVAILABLE)
@@ -1435,7 +1452,8 @@ static __device__ __forceinline__ void flash_attn_ext_f16_process_tile(
     // It's also faster to do small writes to shared memory, then large write to VRAM than to do small writes to VRAM.
     // So also write VKQ accumulators to shared memory in column-major format if np == 1.
 
-    constexpr int tile_stride = nbatch_combine + 4;
+    constexpr int combine_meta_offset = combine_words_per_pair * nbatch_combine;
+    constexpr int tile_stride = combine_meta_offset + 4;
     static_assert((DV/2) % nbatch_combine == 0, "bad nbatch_combine");
 
     if constexpr (cols_per_warp == 8) {
@@ -1445,7 +1463,7 @@ static __device__ __forceinline__ void flash_attn_ext_f16_process_tile(
 
         if (((!needs_fixup && !is_fixup) || np > 1) && threadIdx.x < 2*T_C_VKQ::J) {
             // Use the 16 bytes of padding in each row to store the meta data: KQ max, KQ rowsum, KQ max scale.
-            ((float2 *) tile_Q)[jc_cwm*(tile_stride/2) + nbatch_combine/2] = KQ_cmr;
+            ((float2 *) tile_Q)[jc_cwm*(tile_stride/2) + combine_meta_offset/2] = KQ_cmr;
         }
 
         __syncthreads();
@@ -1480,7 +1498,7 @@ static __device__ __forceinline__ void flash_attn_ext_f16_process_tile(
 #endif // defined(TURING_MMA_AVAILABLE)
 
         if (((!needs_fixup && !is_fixup) || np > 1) && thread_should_write) {
-            ((float2 *) tile_Q)[jc_cwm*(tile_stride/2) + nbatch_combine/2] = KQ_cmr;
+            ((float2 *) tile_Q)[jc_cwm*(tile_stride/2) + combine_meta_offset/2] = KQ_cmr;
         }
 
         __syncthreads();
@@ -1506,7 +1524,7 @@ static __device__ __forceinline__ void flash_attn_ext_f16_process_tile(
         constexpr int nmeta = np*cols_per_warp >= warp_size ? np*cols_per_warp/warp_size : 1;
 
         const int jc_meta = threadIdx.y*cols_per_warp + (np*cols_per_warp < warp_size ? threadIdx.x % (np*cols_per_warp) : threadIdx.x);
-        float2 * const meta_ptr = ((float2 *) tile_Q) + jc_meta*(tile_stride/2) + nbatch_combine/2;
+        float2 * const meta_ptr = ((float2 *) tile_Q) + jc_meta*(tile_stride/2) + combine_meta_offset/2;
         float2 meta[nmeta];
 #pragma unroll
         for (int imeta = 0; imeta < nmeta; ++imeta) {
@@ -1618,7 +1636,6 @@ static __device__ __forceinline__ void flash_attn_ext_f16_process_tile(
                 }
             } else {
                 static_assert(std::is_same_v<decltype(T_C_VKQ::x), float[T_C_VKQ::ne]>, "bad VKQ type");
-                half * tile_Q_h = (half *) tile_Q;
 #pragma unroll
                 for (int k1 = 0; k1 < nbatch_combine; k1 += T_C_VKQ::J/2) {
 #pragma unroll
@@ -1626,7 +1643,11 @@ static __device__ __forceinline__ void flash_attn_ext_f16_process_tile(
                         const int j = j0 + T_C_VKQ::get_i(l);
                         const int k = 2*k1 + T_C_VKQ::get_j(l);
 
-                        tile_Q_h[j*(2*tile_stride) + k] = VKQ_C[(k00 + k1)/(T_C_VKQ::J/2)].x[l];
+                        if constexpr (combine_words_per_pair == 2) {
+                            ((float *) tile_Q)[j*tile_stride + k] = VKQ_C[(k00 + k1)/(T_C_VKQ::J/2)].x[l];
+                        } else {
+                            ((half *) tile_Q)[j*(2*tile_stride) + k] = VKQ_C[(k00 + k1)/(T_C_VKQ::J/2)].x[l];
+                        }
                     }
                 }
             }
@@ -1666,7 +1687,7 @@ static __device__ __forceinline__ void flash_attn_ext_f16_process_tile(
                         continue;
                     }
 
-                    const float * meta_j = (const float *) tile_Q + jc_tile_K*tile_stride + nbatch_combine;
+                    const float * meta_j = (const float *) tile_Q + jc_tile_K*tile_stride + combine_meta_offset;
 #pragma unroll
                     for (int k0 = k0_start; k0 < k0_stop; k0 += stride_k) {
                         const int k = k0 + (stride_k == warp_size ? threadIdx.x : threadIdx.x % stride_k);
@@ -1675,7 +1696,12 @@ static __device__ __forceinline__ void flash_attn_ext_f16_process_tile(
 #pragma unroll
                         for (int ip = 0; ip < np; ++ip) {
                             const float KQ_crs = np == 1 ? 1.0f : meta_j[ip*cols_per_warp * tile_stride + 0];
-                            const float2 dstk_val_add = __half22float2(tile_Q[(jc_tile_K + ip*cols_per_warp) * tile_stride + k]);
+                            float2 dstk_val_add;
+                            if constexpr (combine_words_per_pair == 2) {
+                                dstk_val_add = ((const float2 *) tile_Q)[(jc_tile_K + ip*cols_per_warp) * (tile_stride/2) + k];
+                            } else {
+                                dstk_val_add = __half22float2(tile_Q[(jc_tile_K + ip*cols_per_warp) * tile_stride + k]);
+                            }
                             dstk_val.x += dstk_val_add.x*KQ_crs;
                             dstk_val.y += dstk_val_add.y*KQ_crs;
                         }

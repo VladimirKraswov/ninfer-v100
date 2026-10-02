@@ -26,6 +26,9 @@
 #include "ops/kv_cache/int8_g64_codec.cuh"
 #include "ops/kernel/paged_kv_address.cuh"
 #include "ops/softmax_attention/dense/causal_cache/launch.h"
+#ifdef NINFER_VOLTA_PACKED_PREFILL
+#include "ops/launcher/volta_packed_prefill.h"
+#endif
 
 #include <cuda_bf16.h>
 #include <cuda_fp16.h>
@@ -552,6 +555,24 @@ void volta_flash_launch_impl(const Tensor& q, const Tensor& k, const Tensor& v,
             volta_flash_convert_q_kernel<<<convert_blocks, kConvertThreads, 0, stream>>>(
                 q_begin, static_cast<float*>(q_f32.data), q_count);
         }
+
+#ifdef NINFER_VOLTA_PACKED_PREFILL
+        if constexpr (kQHeads == 24 && kKVHeads == 4) {
+            // Only an exact envelope proves every gathered row before the last
+            // query is initialized. Loose bounds keep the baseline mask route.
+            if (envelope.min_visible_keys == envelope.max_visible_keys &&
+                try_volta_packed_prefill(
+                    static_cast<const float*>(q_f32.data),
+                    static_cast<const half*>(k_gathered.data),
+                    static_cast<const half*>(v_gathered.data), position_ptr + begin,
+                    static_cast<__nv_bfloat16*>(out.data) +
+                        static_cast<std::int64_t>(begin) * kQHeads * kHeadDim,
+                    tokens, n_kv, scale, mask.data, mask.bytes(),
+                    out_f32.data, out_f32.bytes(), stream)) {
+                continue;
+            }
+        }
+#endif
 
         // The mask extent is the padded key count, so every key the kernel can touch
         // has a defined mask entry; keys past a row's causal limit -- padding included

@@ -1,0 +1,1745 @@
+{
+  "schema_version": 1,
+  "report_date": "2026-10-03",
+  "status": "qualified_release_profile_publication_and_deployment_pending",
+  "model": {
+    "name": "Huihui abliterated Qwen3.8-27B NVFP4",
+    "artifact_format": "ninfer v2",
+    "artifact_sha256": "02c0c80616e2dd353133355d840aa6418d83f4c523369ad93b426e6c5bbc83c8",
+    "artifact_identity_source": "same artifact; operator-attested file hash, not HTTP-verified"
+  },
+  "hardware": {
+    "gpu": "NVIDIA Tesla V100-SXM2-32GB",
+    "cuda_architecture": "sm_70",
+    "gpu_memory_gib": 32,
+    "cuda_toolkit": "12.9.86",
+    "cpu_vcpus": 16,
+    "host_memory_gib": 64,
+    "driver": "580.178.04",
+    "application_clock_request_mhz": {
+      "sm": 1530,
+      "memory": 877
+    },
+    "observed_under_load_snapshot": {
+      "sm_clock_mhz": 1477,
+      "memory_clock_mhz": 877,
+      "memory_used_mib": 31959,
+      "temperature_c": 68,
+      "power_w": 292.7,
+      "power_limit_w": 300.0
+    },
+    "clock_limitation": "Requested application clocks do not establish constant SM frequency under load; this is one observed snapshot."
+  },
+  "source_pins": {
+    "baseline": "ce67fc9cd7fb58a82b57e9e7d27f4943ede7ce8a",
+    "ninfer_v100": "b37d0dd3e1163b9d802d8bccfa89918bf68d793e",
+    "onecat_vllm": "a3498d463db549c17a58c04f4455694e0416ca54",
+    "hyperqwen": "e1459c7631774f56de2f9425437d54e7e72ea688"
+  },
+  "protocol": {
+    "model_id": "qwen-v100",
+    "context_capacity_tokens": 262144,
+    "kv_capacity_tokens": 262144,
+    "kv_dtype": "int8-group64",
+    "vision_enabled": true,
+    "concurrency": 1,
+    "prefill_chunk_tokens": 2048,
+    "prefix_reuse": false,
+    "corpus_sha256": "5433c64364b1803c3550225bf59f75b3b932a01d40187d7c5337d50ccd43fa8a",
+    "harness_sha256": "2919b416c8640437589b8d2bf1222a816aed9cabab30aeb6d3a802cc1a174cf9",
+    "harness_hash_source": "preserved same campaign script; absent from original metadata",
+    "quality_scorer_sha256": "badf5dde4a2066b881d1eff2f58410f72d8adb4dc2ee02996c21244435751f97",
+    "repeat_seeds": [
+      20261002
+    ],
+    "quality": {
+      "reasoning_effort": "xhigh",
+      "thinking_budget_tokens": 16384,
+      "max_output_tokens": 32768,
+      "retries": 0,
+      "cases": 6
+    },
+    "performance": {
+      "thinking_enabled": false,
+      "fixed_output_tokens": 1024,
+      "validity": "actual completion_tokens=1024 and finish_reason=length",
+      "actual_input_tokens": [
+        1006,
+        16394,
+        229245
+      ],
+      "selection_use": "The heldout-labeled performance fixtures were used for MTP tuning; final performance on them is not independent of selection."
+    },
+    "packed_prefill_cmake_default": "ON",
+    "qpn_tail_runtime_default": 0,
+    "selected_profile_qpn_tail": 1
+  },
+  "profiles": [
+    {
+      "id": "baseline_mtp4",
+      "status": "baseline_observed",
+      "draft_tokens": 4,
+      "packed_prefill_query_gate": null,
+      "qpn_tail": false,
+      "source_commit": "ce67fc9cd7fb58a82b57e9e7d27f4943ede7ce8a",
+      "binary_sha256": null,
+      "quality": [
+        {
+          "trial_id": "heldout/ru_ledger/1024/seed-20261002",
+          "case_id": "heldout/ru_ledger/1024",
+          "kind": "quality",
+          "fixture_sha256": "49a4ff66b935b5cf04ebe4b767a4b12341a74a0d9b8d178630186c0da983c710",
+          "seed": 814742957,
+          "seed_repeat": 20261002,
+          "target_input_tokens": 1024,
+          "construction_input_tokens": 1028,
+          "construction_count_protocol": "anthropic_messages_count_tokens",
+          "output_budget": 32768,
+          "attempts": 1,
+          "verdict": "PASS",
+          "verdict_detail": "quality scorer passed",
+          "finish_reason": "stop",
+          "metrics": {
+            "wall_s": 4.6,
+            "stream_first_visible_token_s": null,
+            "prompt_tokens": 1028,
+            "completion_tokens": 268,
+            "reasoning_tokens": 254,
+            "cached_prompt_tokens": 0,
+            "native_prefill_s": 1.020243679,
+            "native_decode_s": 3.568002668,
+            "native_prefill_tok_s": 1007.6024200489068,
+            "native_decode_tok_s": 74.83178260896973
+          },
+          "speculation": {
+            "draft_n": 336,
+            "draft_n_accepted": 187,
+            "acceptance_fraction": 0.5565476190476191
+          }
+        },
+        {
+          "trial_id": "heldout/code_intervals/1024/seed-20261002",
+          "case_id": "heldout/code_intervals/1024",
+          "kind": "quality",
+          "fixture_sha256": "bba0637cee2d54cf903ebd3f2004f675f348edea785a975437e29713fa83f81b",
+          "seed": 3089396572,
+          "seed_repeat": 20261002,
+          "target_input_tokens": 1024,
+          "construction_input_tokens": 1043,
+          "construction_count_protocol": "anthropic_messages_count_tokens",
+          "output_budget": 32768,
+          "attempts": 1,
+          "verdict": "PASS",
+          "verdict_detail": "quality scorer passed",
+          "finish_reason": "stop",
+          "metrics": {
+            "wall_s": 33.9,
+            "stream_first_visible_token_s": null,
+            "prompt_tokens": 1043,
+            "completion_tokens": 2045,
+            "reasoning_tokens": 1905,
+            "cached_prompt_tokens": 0,
+            "native_prefill_s": 1.024397794,
+            "native_decode_s": 32.747377287,
+            "native_prefill_tok_s": 1018.1591624942528,
+            "native_decode_tok_s": 62.417212288063865
+          },
+          "speculation": {
+            "draft_n": 3087,
+            "draft_n_accepted": 1282,
+            "acceptance_fraction": 0.4152899254940071
+          }
+        },
+        {
+          "trial_id": "heldout/logic_schedule/1024/seed-20261002",
+          "case_id": "heldout/logic_schedule/1024",
+          "kind": "quality",
+          "fixture_sha256": "a339fb5ca5c6f3e78b1b417bbd84495c8fb04d8053e6e0e70535dbd4d290ecaf",
+          "seed": 2026191810,
+          "seed_repeat": 20261002,
+          "target_input_tokens": 1024,
+          "construction_input_tokens": 1013,
+          "construction_count_protocol": "anthropic_messages_count_tokens",
+          "output_budget": 32768,
+          "attempts": 1,
+          "verdict": "PASS",
+          "verdict_detail": "quality scorer passed",
+          "finish_reason": "stop",
+          "metrics": {
+            "wall_s": 14.2,
+            "stream_first_visible_token_s": null,
+            "prompt_tokens": 1013,
+            "completion_tokens": 917,
+            "reasoning_tokens": 892,
+            "cached_prompt_tokens": 0,
+            "native_prefill_s": 0.908309448,
+            "native_decode_s": 13.200521063,
+            "native_prefill_tok_s": 1115.2586843949684,
+            "native_decode_tok_s": 69.39120021310934
+          },
+          "speculation": {
+            "draft_n": 1302,
+            "draft_n_accepted": 609,
+            "acceptance_fraction": 0.46774193548387094
+          }
+        },
+        {
+          "trial_id": "heldout/retrieval/16384/seed-20261002",
+          "case_id": "heldout/retrieval/16384",
+          "kind": "quality",
+          "fixture_sha256": "298b61ed413c39ba4c71f51249f91db775d29f9a2c36650a28952359e6cfd42a",
+          "seed": 4173525403,
+          "seed_repeat": 20261002,
+          "target_input_tokens": 16384,
+          "construction_input_tokens": 16382,
+          "construction_count_protocol": "anthropic_messages_count_tokens",
+          "output_budget": 32768,
+          "attempts": 1,
+          "verdict": "PASS",
+          "verdict_detail": "quality scorer passed",
+          "finish_reason": "stop",
+          "metrics": {
+            "wall_s": 20.1,
+            "stream_first_visible_token_s": null,
+            "prompt_tokens": 16382,
+            "completion_tokens": 456,
+            "reasoning_tokens": 392,
+            "cached_prompt_tokens": 0,
+            "native_prefill_s": 14.63559027,
+            "native_decode_s": 5.432986662,
+            "native_prefill_tok_s": 1119.3262244830526,
+            "native_decode_tok_s": 83.74767477019806
+          },
+          "speculation": {
+            "draft_n": 518,
+            "draft_n_accepted": 344,
+            "acceptance_fraction": 0.6640926640926641
+          }
+        },
+        {
+          "trial_id": "heldout/retrieval/131072/seed-20261002",
+          "case_id": "heldout/retrieval/131072",
+          "kind": "quality",
+          "fixture_sha256": "4c3afba0c0d93791589577a1de4d2564362b835e6fcbbe3a80e4ad9878e4eb21",
+          "seed": 1582985265,
+          "seed_repeat": 20261002,
+          "target_input_tokens": 131072,
+          "construction_input_tokens": 131092,
+          "construction_count_protocol": "anthropic_messages_count_tokens",
+          "output_budget": 32768,
+          "attempts": 1,
+          "verdict": "PASS",
+          "verdict_detail": "quality scorer passed",
+          "finish_reason": "stop",
+          "metrics": {
+            "wall_s": 240.1,
+            "stream_first_visible_token_s": null,
+            "prompt_tokens": 131092,
+            "completion_tokens": 364,
+            "reasoning_tokens": 286,
+            "cached_prompt_tokens": 0,
+            "native_prefill_s": 232.953336793,
+            "native_decode_s": 6.966410474,
+            "native_prefill_tok_s": 562.7393099609775,
+            "native_decode_tok_s": 52.10717935079862
+          },
+          "speculation": {
+            "draft_n": 404,
+            "draft_n_accepted": 279,
+            "acceptance_fraction": 0.6905940594059405
+          }
+        },
+        {
+          "trial_id": "heldout/retrieval/229248/seed-20261002",
+          "case_id": "heldout/retrieval/229248",
+          "kind": "quality",
+          "fixture_sha256": "4f59b6ccef8c315101d6565f559a83518b3dfe695acd6759cf63958797329eaa",
+          "seed": 2169337069,
+          "seed_repeat": 20261002,
+          "target_input_tokens": 229248,
+          "construction_input_tokens": 229233,
+          "construction_count_protocol": "anthropic_messages_count_tokens",
+          "output_budget": 32768,
+          "attempts": 1,
+          "verdict": "PASS",
+          "verdict_detail": "quality scorer passed",
+          "finish_reason": "stop",
+          "metrics": {
+            "wall_s": 602.9,
+            "stream_first_visible_token_s": null,
+            "prompt_tokens": 229233,
+            "completion_tokens": 383,
+            "reasoning_tokens": 319,
+            "cached_prompt_tokens": 0,
+            "native_prefill_s": 592.668670207,
+            "native_decode_s": 10.044937448,
+            "native_prefill_tok_s": 386.7810321742439,
+            "native_decode_tok_s": 38.029106898625656
+          },
+          "speculation": {
+            "draft_n": 425,
+            "draft_n_accepted": 292,
+            "acceptance_fraction": 0.6870588235294117
+          }
+        }
+      ],
+      "performance": [
+        {
+          "trial_id": "heldout/perf_ru/1024/seed-20261002",
+          "case_id": "heldout/perf_ru/1024",
+          "kind": "performance",
+          "fixture_sha256": "b6ac96775aed78bd7ef798706860c0d3c8c230a0d3df98d5078816812c87275c",
+          "seed": 1344025369,
+          "seed_repeat": 20261002,
+          "target_input_tokens": 1024,
+          "construction_input_tokens": 1006,
+          "construction_count_protocol": "anthropic_messages_count_tokens",
+          "output_budget": 1024,
+          "attempts": 1,
+          "verdict": "PASS",
+          "verdict_detail": "fixed output cap reached",
+          "finish_reason": "length",
+          "metrics": {
+            "wall_s": 18.540779245000067,
+            "stream_first_visible_token_s": 0.903437920000215,
+            "prompt_tokens": 1006,
+            "completion_tokens": 1024,
+            "reasoning_tokens": 0,
+            "cached_prompt_tokens": 0,
+            "native_prefill_s": 0.899875931,
+            "native_decode_s": 17.637141364,
+            "native_prefill_tok_s": 1117.9318896573534,
+            "native_decode_tok_s": 58.00259684305152
+          },
+          "speculation": {
+            "draft_n": 1651,
+            "draft_n_accepted": 609,
+            "acceptance_fraction": 0.3688673531193216
+          }
+        },
+        {
+          "trial_id": "heldout/perf_ru/16384/seed-20261002",
+          "case_id": "heldout/perf_ru/16384",
+          "kind": "performance",
+          "fixture_sha256": "abd1dbf646f1ad844c213226254ec3514ffac0cd97b6babb5dcc3b835f2de693",
+          "seed": 4204204080,
+          "seed_repeat": 20261002,
+          "target_input_tokens": 16384,
+          "construction_input_tokens": 16394,
+          "construction_count_protocol": "anthropic_messages_count_tokens",
+          "output_budget": 1024,
+          "attempts": 1,
+          "verdict": "PASS",
+          "verdict_detail": "fixed output cap reached",
+          "finish_reason": "length",
+          "metrics": {
+            "wall_s": 32.79937546999963,
+            "stream_first_visible_token_s": 14.601276523999786,
+            "prompt_tokens": 16394,
+            "completion_tokens": 1024,
+            "reasoning_tokens": 0,
+            "cached_prompt_tokens": 0,
+            "native_prefill_s": 14.588928161,
+            "native_decode_s": 18.197886913,
+            "native_prefill_tok_s": 1123.7288866652607,
+            "native_decode_tok_s": 56.215318014159145
+          },
+          "speculation": {
+            "draft_n": 1564,
+            "draft_n_accepted": 631,
+            "acceptance_fraction": 0.40345268542199486
+          }
+        },
+        {
+          "trial_id": "heldout/perf_ru/131072/seed-20261002",
+          "case_id": "heldout/perf_ru/131072",
+          "kind": "performance",
+          "fixture_sha256": "091aead86273cf76e6b1b9aa1c28efaf6adb76cefae4e540273e272e7871081b",
+          "seed": 1351459353,
+          "seed_repeat": 20261002,
+          "target_input_tokens": 131072,
+          "construction_input_tokens": 131059,
+          "construction_count_protocol": "anthropic_messages_count_tokens",
+          "output_budget": 1024,
+          "attempts": 1,
+          "verdict": "INVALID",
+          "verdict_detail": "invalid fixed-output trial: early stop or wrong usage",
+          "finish_reason": "stop",
+          "metrics": {
+            "wall_s": 253.56288750299973,
+            "stream_first_visible_token_s": 232.02263601000004,
+            "prompt_tokens": 131059,
+            "completion_tokens": 702,
+            "reasoning_tokens": 0,
+            "cached_prompt_tokens": 0,
+            "native_prefill_s": 231.932552168,
+            "native_decode_s": 21.539744423,
+            "native_prefill_tok_s": 565.0737629320253,
+            "native_decode_tok_s": 32.54449014035082
+          },
+          "speculation": {
+            "draft_n": 1148,
+            "draft_n_accepted": 414,
+            "acceptance_fraction": 0.3606271777003484
+          }
+        },
+        {
+          "trial_id": "heldout/perf_ru/229248/seed-20261002",
+          "case_id": "heldout/perf_ru/229248",
+          "kind": "performance",
+          "fixture_sha256": "a7256f59daff6b36ff5a55b49ac027fe1da58011b5992b3ed69905fd8e55d2dd",
+          "seed": 538112245,
+          "seed_repeat": 20261002,
+          "target_input_tokens": 229248,
+          "construction_input_tokens": 229245,
+          "construction_count_protocol": "anthropic_messages_count_tokens",
+          "output_budget": 1024,
+          "attempts": 1,
+          "verdict": "PASS",
+          "verdict_detail": "fixed output cap reached",
+          "finish_reason": "length",
+          "metrics": {
+            "wall_s": 625.1416630409999,
+            "stream_first_visible_token_s": 593.92075776,
+            "prompt_tokens": 229245,
+            "completion_tokens": 1024,
+            "reasoning_tokens": 0,
+            "cached_prompt_tokens": 0,
+            "native_prefill_s": 593.762633505,
+            "native_decode_s": 31.219895419,
+            "native_prefill_tok_s": 386.08862711140875,
+            "native_decode_tok_s": 32.767566523538584
+          },
+          "speculation": {
+            "draft_n": 1249,
+            "draft_n_accepted": 710,
+            "acceptance_fraction": 0.5684547638110489
+          }
+        }
+      ]
+    },
+    {
+      "id": "tuning_mtp3",
+      "status": "intermediate_tuning_only",
+      "draft_tokens": 3,
+      "packed_prefill_query_gate": [
+        1024,
+        1024
+      ],
+      "qpn_tail": true,
+      "source_commit": null,
+      "binary_sha256": "d06815d42f15093d41aba9959adf10460f2a28496bf26a403c3d3ebe749f7518",
+      "quality": [],
+      "performance": [
+        {
+          "trial_id": "heldout/perf_ru/1024/seed-20261002",
+          "case_id": "heldout/perf_ru/1024",
+          "kind": "performance",
+          "fixture_sha256": "b6ac96775aed78bd7ef798706860c0d3c8c230a0d3df98d5078816812c87275c",
+          "seed": 1344025369,
+          "seed_repeat": 20261002,
+          "target_input_tokens": 1024,
+          "construction_input_tokens": 1006,
+          "construction_count_protocol": "anthropic_messages_count_tokens",
+          "output_budget": 1024,
+          "attempts": 1,
+          "verdict": "PASS",
+          "verdict_detail": "fixed output cap reached",
+          "finish_reason": "length",
+          "metrics": {
+            "wall_s": 15.791068713999266,
+            "stream_first_visible_token_s": 0.9395416609995664,
+            "prompt_tokens": 1006,
+            "completion_tokens": 1024,
+            "reasoning_tokens": 0,
+            "cached_prompt_tokens": 0,
+            "native_prefill_s": 0.935075428,
+            "native_decode_s": 14.851346637,
+            "native_prefill_tok_s": 1075.8490383515884,
+            "native_decode_tok_s": 68.88264242996942
+          },
+          "speculation": {
+            "draft_n": 1149,
+            "draft_n_accepted": 639,
+            "acceptance_fraction": 0.556135770234987
+          }
+        },
+        {
+          "trial_id": "heldout/perf_ru/16384/seed-20261002",
+          "case_id": "heldout/perf_ru/16384",
+          "kind": "performance",
+          "fixture_sha256": "abd1dbf646f1ad844c213226254ec3514ffac0cd97b6babb5dcc3b835f2de693",
+          "seed": 4204204080,
+          "seed_repeat": 20261002,
+          "target_input_tokens": 16384,
+          "construction_input_tokens": 16394,
+          "construction_count_protocol": "anthropic_messages_count_tokens",
+          "output_budget": 1024,
+          "attempts": 1,
+          "verdict": "PASS",
+          "verdict_detail": "fixed output cap reached",
+          "finish_reason": "length",
+          "metrics": {
+            "wall_s": 37.95006135100084,
+            "stream_first_visible_token_s": 18.615078340000764,
+            "prompt_tokens": 16394,
+            "completion_tokens": 1024,
+            "reasoning_tokens": 0,
+            "cached_prompt_tokens": 0,
+            "native_prefill_s": 18.600360432,
+            "native_decode_s": 19.334760621,
+            "native_prefill_tok_s": 881.3807700089412,
+            "native_decode_tok_s": 52.90988701917997
+          },
+          "speculation": {
+            "draft_n": 1370,
+            "draft_n_accepted": 566,
+            "acceptance_fraction": 0.4131386861313869
+          }
+        },
+        {
+          "trial_id": "heldout/perf_ru/229248/seed-20261002",
+          "case_id": "heldout/perf_ru/229248",
+          "kind": "performance",
+          "fixture_sha256": "a7256f59daff6b36ff5a55b49ac027fe1da58011b5992b3ed69905fd8e55d2dd",
+          "seed": 538112245,
+          "seed_repeat": 20261002,
+          "target_input_tokens": 229248,
+          "construction_input_tokens": 229245,
+          "construction_count_protocol": "anthropic_messages_count_tokens",
+          "output_budget": 1024,
+          "attempts": 1,
+          "verdict": "PASS",
+          "verdict_detail": "fixed output cap reached",
+          "finish_reason": "length",
+          "metrics": {
+            "wall_s": 452.2744833180004,
+            "stream_first_visible_token_s": 426.7415990540003,
+            "prompt_tokens": 229245,
+            "completion_tokens": 1024,
+            "reasoning_tokens": 0,
+            "cached_prompt_tokens": 0,
+            "native_prefill_s": 426.57817543699997,
+            "native_decode_s": 25.532071284,
+            "native_prefill_tok_s": 537.4044271373102,
+            "native_decode_tok_s": 40.06725457644621
+          },
+          "speculation": {
+            "draft_n": 882,
+            "draft_n_accepted": 755,
+            "acceptance_fraction": 0.8560090702947846
+          }
+        }
+      ]
+    },
+    {
+      "id": "tuning_mtp4",
+      "status": "intermediate_tuning_only",
+      "draft_tokens": 4,
+      "packed_prefill_query_gate": [
+        1024,
+        1024
+      ],
+      "qpn_tail": true,
+      "source_commit": null,
+      "binary_sha256": "41f3c5b86afae38e9e57bb10ef3393ef716d4691d86b0474d9ed75f512004da4",
+      "quality": [],
+      "performance": [
+        {
+          "trial_id": "heldout/perf_ru/1024/seed-20261002",
+          "case_id": "heldout/perf_ru/1024",
+          "kind": "performance",
+          "fixture_sha256": "b6ac96775aed78bd7ef798706860c0d3c8c230a0d3df98d5078816812c87275c",
+          "seed": 1344025369,
+          "seed_repeat": 20261002,
+          "target_input_tokens": 1024,
+          "construction_input_tokens": 1006,
+          "construction_count_protocol": "anthropic_messages_count_tokens",
+          "output_budget": 1024,
+          "attempts": 1,
+          "verdict": "PASS",
+          "verdict_detail": "fixed output cap reached",
+          "finish_reason": "length",
+          "metrics": {
+            "wall_s": 17.867887309999787,
+            "stream_first_visible_token_s": 0.9347923089999313,
+            "prompt_tokens": 1006,
+            "completion_tokens": 1024,
+            "reasoning_tokens": 0,
+            "cached_prompt_tokens": 0,
+            "native_prefill_s": 0.930941241,
+            "native_decode_s": 16.932796724,
+            "native_prefill_tok_s": 1080.626741725797,
+            "native_decode_tok_s": 60.41530035909737
+          },
+          "speculation": {
+            "draft_n": 1590,
+            "draft_n_accepted": 625,
+            "acceptance_fraction": 0.39308176100628933
+          }
+        },
+        {
+          "trial_id": "heldout/perf_ru/16384/seed-20261002",
+          "case_id": "heldout/perf_ru/16384",
+          "kind": "performance",
+          "fixture_sha256": "abd1dbf646f1ad844c213226254ec3514ffac0cd97b6babb5dcc3b835f2de693",
+          "seed": 4204204080,
+          "seed_repeat": 20261002,
+          "target_input_tokens": 16384,
+          "construction_input_tokens": 16394,
+          "construction_count_protocol": "anthropic_messages_count_tokens",
+          "output_budget": 1024,
+          "attempts": 1,
+          "verdict": "PASS",
+          "verdict_detail": "fixed output cap reached",
+          "finish_reason": "length",
+          "metrics": {
+            "wall_s": 34.6372084679997,
+            "stream_first_visible_token_s": 18.58642762599993,
+            "prompt_tokens": 16394,
+            "completion_tokens": 1024,
+            "reasoning_tokens": 0,
+            "cached_prompt_tokens": 0,
+            "native_prefill_s": 18.571596288,
+            "native_decode_s": 16.050688471,
+            "native_prefill_tok_s": 882.7458741709216,
+            "native_decode_tok_s": 63.73558379432333
+          },
+          "speculation": {
+            "draft_n": 1382,
+            "draft_n_accepted": 677,
+            "acceptance_fraction": 0.48986975397973953
+          }
+        },
+        {
+          "trial_id": "heldout/perf_ru/229248/seed-20261002",
+          "case_id": "heldout/perf_ru/229248",
+          "kind": "performance",
+          "fixture_sha256": "a7256f59daff6b36ff5a55b49ac027fe1da58011b5992b3ed69905fd8e55d2dd",
+          "seed": 538112245,
+          "seed_repeat": 20261002,
+          "target_input_tokens": 229248,
+          "construction_input_tokens": 229245,
+          "construction_count_protocol": "anthropic_messages_count_tokens",
+          "output_budget": 1024,
+          "attempts": 1,
+          "verdict": "PASS",
+          "verdict_detail": "fixed output cap reached",
+          "finish_reason": "length",
+          "metrics": {
+            "wall_s": 452.5910594879997,
+            "stream_first_visible_token_s": 426.63612197099974,
+            "prompt_tokens": 229245,
+            "completion_tokens": 1024,
+            "reasoning_tokens": 0,
+            "cached_prompt_tokens": 0,
+            "native_prefill_s": 426.471988845,
+            "native_decode_s": 25.9543531,
+            "native_prefill_tok_s": 537.538234623232,
+            "native_decode_tok_s": 39.41535341137052
+          },
+          "speculation": {
+            "draft_n": 1071,
+            "draft_n_accepted": 772,
+            "acceptance_fraction": 0.7208216619981326
+          }
+        }
+      ]
+    },
+    {
+      "id": "tuning_mtp7",
+      "status": "intermediate_tuning_only",
+      "draft_tokens": 7,
+      "packed_prefill_query_gate": [
+        1024,
+        1024
+      ],
+      "qpn_tail": true,
+      "source_commit": null,
+      "binary_sha256": "d06815d42f15093d41aba9959adf10460f2a28496bf26a403c3d3ebe749f7518",
+      "quality": [],
+      "performance": [
+        {
+          "trial_id": "heldout/perf_ru/1024/seed-20261002",
+          "case_id": "heldout/perf_ru/1024",
+          "kind": "performance",
+          "fixture_sha256": "b6ac96775aed78bd7ef798706860c0d3c8c230a0d3df98d5078816812c87275c",
+          "seed": 1344025369,
+          "seed_repeat": 20261002,
+          "target_input_tokens": 1024,
+          "construction_input_tokens": 1006,
+          "construction_count_protocol": "anthropic_messages_count_tokens",
+          "output_budget": 1024,
+          "attempts": 1,
+          "verdict": "PASS",
+          "verdict_detail": "fixed output cap reached",
+          "finish_reason": "length",
+          "metrics": {
+            "wall_s": 20.314388868000606,
+            "stream_first_visible_token_s": 0.9567349340004512,
+            "prompt_tokens": 1006,
+            "completion_tokens": 1024,
+            "reasoning_tokens": 0,
+            "cached_prompt_tokens": 0,
+            "native_prefill_s": 0.953151328,
+            "native_decode_s": 19.35725863,
+            "native_prefill_tok_s": 1055.446255434478,
+            "native_decode_tok_s": 52.84839240689527
+          },
+          "speculation": {
+            "draft_n": 2779,
+            "draft_n_accepted": 625,
+            "acceptance_fraction": 0.22490104354084203
+          }
+        },
+        {
+          "trial_id": "heldout/perf_ru/16384/seed-20261002",
+          "case_id": "heldout/perf_ru/16384",
+          "kind": "performance",
+          "fixture_sha256": "abd1dbf646f1ad844c213226254ec3514ffac0cd97b6babb5dcc3b835f2de693",
+          "seed": 4204204080,
+          "seed_repeat": 20261002,
+          "target_input_tokens": 16384,
+          "construction_input_tokens": 16394,
+          "construction_count_protocol": "anthropic_messages_count_tokens",
+          "output_budget": 1024,
+          "attempts": 1,
+          "verdict": "PASS",
+          "verdict_detail": "fixed output cap reached",
+          "finish_reason": "length",
+          "metrics": {
+            "wall_s": 38.763620858999275,
+            "stream_first_visible_token_s": 19.42898696499924,
+            "prompt_tokens": 16394,
+            "completion_tokens": 1024,
+            "reasoning_tokens": 0,
+            "cached_prompt_tokens": 0,
+            "native_prefill_s": 19.413575681,
+            "native_decode_s": 19.334489835,
+            "native_prefill_tok_s": 844.4606119646857,
+            "native_decode_tok_s": 52.9106280398528
+          },
+          "speculation": {
+            "draft_n": 2465,
+            "draft_n_accepted": 669,
+            "acceptance_fraction": 0.2713995943204868
+          }
+        },
+        {
+          "trial_id": "heldout/perf_ru/229248/seed-20261002",
+          "case_id": "heldout/perf_ru/229248",
+          "kind": "performance",
+          "fixture_sha256": "a7256f59daff6b36ff5a55b49ac027fe1da58011b5992b3ed69905fd8e55d2dd",
+          "seed": 538112245,
+          "seed_repeat": 20261002,
+          "target_input_tokens": 229248,
+          "construction_input_tokens": 229245,
+          "construction_count_protocol": "anthropic_messages_count_tokens",
+          "output_budget": 1024,
+          "attempts": 1,
+          "verdict": "PASS",
+          "verdict_detail": "fixed output cap reached",
+          "finish_reason": "length",
+          "metrics": {
+            "wall_s": 476.54043975900004,
+            "stream_first_visible_token_s": 429.1217988460003,
+            "prompt_tokens": 229245,
+            "completion_tokens": 1024,
+            "reasoning_tokens": 0,
+            "cached_prompt_tokens": 0,
+            "native_prefill_s": 428.958926886,
+            "native_decode_s": 47.417829376,
+            "native_prefill_tok_s": 534.4217957280654,
+            "native_decode_tok_s": 21.574163420432313
+          },
+          "speculation": {
+            "draft_n": 2396,
+            "draft_n_accepted": 679,
+            "acceptance_fraction": 0.2833889816360601
+          }
+        }
+      ]
+    }
+  ],
+  "kernel_only": {
+    "methodology": {
+      "geometry": "Hq24/Hkv4/D256",
+      "storage": "INT8-G64",
+      "mapping": "fragmented",
+      "prefill_execution": "eager",
+      "decode_execution": "graph",
+      "cache": "warm",
+      "warmups": 5,
+      "repeats": 20,
+      "scope": "Public attention Op, not whole-model throughput"
+    },
+    "baseline_prefill": [
+      {
+        "history_tokens": 32768,
+        "query_tokens": 64,
+        "median_us": 1778.69,
+        "min_us": 1754.21,
+        "p95_us": 1818.62
+      },
+      {
+        "history_tokens": 32768,
+        "query_tokens": 128,
+        "median_us": 3182.59,
+        "min_us": 3111.94,
+        "p95_us": 3209.22
+      },
+      {
+        "history_tokens": 32768,
+        "query_tokens": 1024,
+        "median_us": 26271.7,
+        "min_us": 24873.0,
+        "p95_us": 27472.9
+      },
+      {
+        "history_tokens": 131072,
+        "query_tokens": 64,
+        "median_us": 7196.67,
+        "min_us": 7086.08,
+        "p95_us": 7377.92
+      },
+      {
+        "history_tokens": 131072,
+        "query_tokens": 128,
+        "median_us": 13374.5,
+        "min_us": 13090.8,
+        "p95_us": 13525.0
+      },
+      {
+        "history_tokens": 131072,
+        "query_tokens": 1024,
+        "median_us": 130223.0,
+        "min_us": 124467.0,
+        "p95_us": 132803.0
+      },
+      {
+        "history_tokens": 261120,
+        "query_tokens": 64,
+        "median_us": 14818.3,
+        "min_us": 14477.3,
+        "p95_us": 15129.6
+      },
+      {
+        "history_tokens": 261120,
+        "query_tokens": 128,
+        "median_us": 27715.6,
+        "min_us": 27107.3,
+        "p95_us": 29110.3
+      },
+      {
+        "history_tokens": 261120,
+        "query_tokens": 1024,
+        "median_us": 275557.0,
+        "min_us": 266212.0,
+        "p95_us": 278183.0
+      }
+    ],
+    "broad_fused_prefill": [
+      {
+        "history_tokens": 32768,
+        "query_tokens": 64,
+        "median_us": 3510.27,
+        "min_us": 3498.05,
+        "p95_us": 3525.63
+      },
+      {
+        "history_tokens": 32768,
+        "query_tokens": 128,
+        "median_us": 4856.83,
+        "min_us": 4851.68,
+        "p95_us": 4869.12
+      },
+      {
+        "history_tokens": 32768,
+        "query_tokens": 1024,
+        "median_us": 19645.4,
+        "min_us": 19625.0,
+        "p95_us": 19659.8
+      },
+      {
+        "history_tokens": 131072,
+        "query_tokens": 64,
+        "median_us": 11336.7,
+        "min_us": 11321.3,
+        "p95_us": 11352.1
+      },
+      {
+        "history_tokens": 131072,
+        "query_tokens": 128,
+        "median_us": 14414.8,
+        "min_us": 14402.6,
+        "p95_us": 14421.0
+      },
+      {
+        "history_tokens": 131072,
+        "query_tokens": 1024,
+        "median_us": 68811.8,
+        "min_us": 68787.2,
+        "p95_us": 68839.5
+      },
+      {
+        "history_tokens": 261120,
+        "query_tokens": 64,
+        "median_us": 22427.6,
+        "min_us": 22404.1,
+        "p95_us": 22434.8
+      },
+      {
+        "history_tokens": 261120,
+        "query_tokens": 128,
+        "median_us": 27772.9,
+        "min_us": 27757.6,
+        "p95_us": 27789.3
+      },
+      {
+        "history_tokens": 261120,
+        "query_tokens": 1024,
+        "median_us": 130890.0,
+        "min_us": 130839.0,
+        "p95_us": 130921.0
+      }
+    ],
+    "repaired_fallback_with_t1024_gate": [
+      {
+        "history_tokens": 32768,
+        "query_tokens": 64,
+        "median_us": 10874.9,
+        "min_us": 10777.6,
+        "p95_us": 10932.2
+      },
+      {
+        "history_tokens": 32768,
+        "query_tokens": 128,
+        "median_us": 17987.6,
+        "min_us": 17828.9,
+        "p95_us": 18215.9
+      },
+      {
+        "history_tokens": 32768,
+        "query_tokens": 1024,
+        "median_us": 19575.8,
+        "min_us": 19554.3,
+        "p95_us": 19679.2
+      },
+      {
+        "history_tokens": 131072,
+        "query_tokens": 64,
+        "median_us": 43725.8,
+        "min_us": 43407.4,
+        "p95_us": 44119.0
+      },
+      {
+        "history_tokens": 131072,
+        "query_tokens": 128,
+        "median_us": 73920.5,
+        "min_us": 73221.1,
+        "p95_us": 74805.2
+      },
+      {
+        "history_tokens": 131072,
+        "query_tokens": 1024,
+        "median_us": 68415.5,
+        "min_us": 68363.3,
+        "p95_us": 68587.5
+      },
+      {
+        "history_tokens": 261120,
+        "query_tokens": 64,
+        "median_us": 87862.3,
+        "min_us": 87402.5,
+        "p95_us": 88668.2
+      },
+      {
+        "history_tokens": 261120,
+        "query_tokens": 128,
+        "median_us": 152253.0,
+        "min_us": 148278.0,
+        "p95_us": 154010.0
+      },
+      {
+        "history_tokens": 261120,
+        "query_tokens": 1024,
+        "median_us": 129884.0,
+        "min_us": 129809.0,
+        "p95_us": 129949.0
+      }
+    ],
+    "qpn_off": [
+      {
+        "history_tokens": 32768,
+        "query_tokens": 1,
+        "median_us": 449.536,
+        "min_us": 446.464,
+        "p95_us": 451.584
+      },
+      {
+        "history_tokens": 32768,
+        "query_tokens": 5,
+        "median_us": 490.4,
+        "min_us": 488.448,
+        "p95_us": 491.616
+      },
+      {
+        "history_tokens": 32768,
+        "query_tokens": 7,
+        "median_us": 931.936,
+        "min_us": 927.744,
+        "p95_us": 934.912
+      },
+      {
+        "history_tokens": 32768,
+        "query_tokens": 8,
+        "median_us": 942.08,
+        "min_us": 937.984,
+        "p95_us": 944.128
+      },
+      {
+        "history_tokens": 131072,
+        "query_tokens": 1,
+        "median_us": 1569.79,
+        "min_us": 1566.72,
+        "p95_us": 1594.37
+      },
+      {
+        "history_tokens": 131072,
+        "query_tokens": 5,
+        "median_us": 1697.79,
+        "min_us": 1695.74,
+        "p95_us": 1701.89
+      },
+      {
+        "history_tokens": 131072,
+        "query_tokens": 7,
+        "median_us": 3255.3,
+        "min_us": 3249.15,
+        "p95_us": 3263.49
+      },
+      {
+        "history_tokens": 131072,
+        "query_tokens": 8,
+        "median_us": 3281.92,
+        "min_us": 3276.8,
+        "p95_us": 3288.06
+      },
+      {
+        "history_tokens": 262136,
+        "query_tokens": 1,
+        "median_us": 3101.7,
+        "min_us": 3095.55,
+        "p95_us": 3159.04
+      },
+      {
+        "history_tokens": 262136,
+        "query_tokens": 5,
+        "median_us": 3368.96,
+        "min_us": 3356.67,
+        "p95_us": 3482.62
+      },
+      {
+        "history_tokens": 262136,
+        "query_tokens": 7,
+        "median_us": 6468.61,
+        "min_us": 6459.39,
+        "p95_us": 6479.87
+      },
+      {
+        "history_tokens": 262136,
+        "query_tokens": 8,
+        "median_us": 6530.05,
+        "min_us": 6523.9,
+        "p95_us": 6552.58
+      }
+    ],
+    "qpn_on": [
+      {
+        "history_tokens": 32768,
+        "query_tokens": 1,
+        "median_us": 450.56,
+        "min_us": 447.488,
+        "p95_us": 453.632
+      },
+      {
+        "history_tokens": 32768,
+        "query_tokens": 5,
+        "median_us": 491.456,
+        "min_us": 487.52,
+        "p95_us": 493.568
+      },
+      {
+        "history_tokens": 32768,
+        "query_tokens": 7,
+        "median_us": 736.224,
+        "min_us": 728.064,
+        "p95_us": 740.352
+      },
+      {
+        "history_tokens": 32768,
+        "query_tokens": 8,
+        "median_us": 744.448,
+        "min_us": 738.272,
+        "p95_us": 747.52
+      },
+      {
+        "history_tokens": 131072,
+        "query_tokens": 1,
+        "median_us": 1565.7,
+        "min_us": 1561.54,
+        "p95_us": 1570.82
+      },
+      {
+        "history_tokens": 131072,
+        "query_tokens": 5,
+        "median_us": 1697.79,
+        "min_us": 1695.74,
+        "p95_us": 1700.86
+      },
+      {
+        "history_tokens": 131072,
+        "query_tokens": 7,
+        "median_us": 2524.16,
+        "min_us": 2513.92,
+        "p95_us": 2530.3
+      },
+      {
+        "history_tokens": 131072,
+        "query_tokens": 8,
+        "median_us": 2555.9,
+        "min_us": 2546.69,
+        "p95_us": 2567.17
+      },
+      {
+        "history_tokens": 262136,
+        "query_tokens": 1,
+        "median_us": 3102.72,
+        "min_us": 3098.62,
+        "p95_us": 3163.17
+      },
+      {
+        "history_tokens": 262136,
+        "query_tokens": 5,
+        "median_us": 3365.89,
+        "min_us": 3357.7,
+        "p95_us": 3482.62
+      },
+      {
+        "history_tokens": 262136,
+        "query_tokens": 7,
+        "median_us": 5008.38,
+        "min_us": 4999.17,
+        "p95_us": 5024.77
+      },
+      {
+        "history_tokens": 262136,
+        "query_tokens": 8,
+        "median_us": 5060.54,
+        "min_us": 5045.25,
+        "p95_us": 5080.06
+      }
+    ],
+    "final_gate64_prefill": [
+      {
+        "history_tokens": 32768,
+        "query_tokens": 64,
+        "median_us": 3487.74,
+        "min_us": 3480.58,
+        "p95_us": 3493.92
+      },
+      {
+        "history_tokens": 32768,
+        "query_tokens": 128,
+        "median_us": 4824.06,
+        "min_us": 4813.82,
+        "p95_us": 4828.16
+      },
+      {
+        "history_tokens": 32768,
+        "query_tokens": 1024,
+        "median_us": 19537.9,
+        "min_us": 19516.4,
+        "p95_us": 19687.4
+      },
+      {
+        "history_tokens": 131072,
+        "query_tokens": 64,
+        "median_us": 11328.6,
+        "min_us": 11319.3,
+        "p95_us": 11337.7
+      },
+      {
+        "history_tokens": 131072,
+        "query_tokens": 128,
+        "median_us": 14397.5,
+        "min_us": 14390.3,
+        "p95_us": 14409.7
+      },
+      {
+        "history_tokens": 131072,
+        "query_tokens": 1024,
+        "median_us": 68420.6,
+        "min_us": 68390.9,
+        "p95_us": 68457.5
+      },
+      {
+        "history_tokens": 261120,
+        "query_tokens": 64,
+        "median_us": 22402.0,
+        "min_us": 22382.6,
+        "p95_us": 22413.3
+      },
+      {
+        "history_tokens": 261120,
+        "query_tokens": 128,
+        "median_us": 27742.2,
+        "min_us": 27734.0,
+        "p95_us": 27751.4
+      },
+      {
+        "history_tokens": 261120,
+        "query_tokens": 1024,
+        "median_us": 129987.0,
+        "min_us": 129907.0,
+        "p95_us": 130432.0
+      }
+    ],
+    "final_gate64_tails": [
+      {
+        "history_tokens": 32768,
+        "query_tokens": 256,
+        "median_us": 6148.1,
+        "min_us": 6137.86,
+        "p95_us": 6164.48
+      },
+      {
+        "history_tokens": 32768,
+        "query_tokens": 512,
+        "median_us": 10960.9,
+        "min_us": 10946.6,
+        "p95_us": 10982.4
+      },
+      {
+        "history_tokens": 32768,
+        "query_tokens": 877,
+        "median_us": 18114.6,
+        "min_us": 18098.2,
+        "p95_us": 18133.0
+      },
+      {
+        "history_tokens": 131072,
+        "query_tokens": 256,
+        "median_us": 19766.3,
+        "min_us": 19750.0,
+        "p95_us": 19926.0
+      },
+      {
+        "history_tokens": 131072,
+        "query_tokens": 512,
+        "median_us": 38444.0,
+        "min_us": 38414.3,
+        "p95_us": 38463.5
+      },
+      {
+        "history_tokens": 131072,
+        "query_tokens": 877,
+        "median_us": 61683.7,
+        "min_us": 61632.5,
+        "p95_us": 61709.3
+      }
+    ]
+  },
+  "numerical_qualification": {
+    "oracle": "Independent FP64 from represented public inputs; reference remains unrounded",
+    "base_constants": {
+      "bf16": {
+        "relative_l2": 0.0028,
+        "absolute": 0.001,
+        "relative_to_max_reference": 0.0027
+      },
+      "int8_g64": {
+        "relative_l2": 0.00315,
+        "absolute": 0.0011,
+        "relative_to_max_reference": 0.003
+      }
+    },
+    "criterion_changed": true,
+    "criterion": "gross_limit[i]=profile.absolute+max(profile.relative*max(abs(reference)),halfULP_BF16(reference[i])); raw_L2_limit=max(profile.L2,norm(halfULP_BF16(reference))/max(norm(reference),1e-30))",
+    "cpu_criterion_test": "PASS",
+    "qpn_gpu_suite": {
+      "status": "PASS",
+      "elapsed_s": 532.1664,
+      "criterion": "original before BF16 output floor"
+    },
+    "broad_fused_gpu_suite": {
+      "status": "FAIL_ONE_FALLBACK_CASE",
+      "elapsed_s": 477.9229,
+      "fused_cases": "PASS",
+      "failure": "BF16 graph fallback seed974, under original criterion"
+    },
+    "focused_t1024_gate_13_cases": {
+      "status": "PASS",
+      "exit_code": 0,
+      "criterion": "BF16 output half-ULP floor"
+    },
+    "restored_gate64_13_cases": {
+      "status": "PASS",
+      "exit_code": 0,
+      "elapsed_s": 241.93541267399996,
+      "criterion": "BF16 output half-ULP floor"
+    },
+    "restored_gate64_4_tail_cases": {
+      "status": "PASS",
+      "exit_code": 0,
+      "elapsed_s": 30.89610959699985,
+      "criterion": "BF16 output half-ULP floor"
+    },
+    "criterion_scope": "Causal A1 append, A3 cached and batch, all registered storage profiles",
+    "coverage_limit": "Large-prefill oracles sample first/middle/last queries; all heads, all 256 output components and all visible keys are covered for each selected query. Passing tolerance is not bitwise or model-distribution parity."
+  },
+  "selected_profile": {
+    "draft_tokens": 4,
+    "packed_prefill_query_gate": [
+      64,
+      1024
+    ],
+    "status": "qualified_release_profile",
+    "rationale": "MTP3 long decode is only 1.65% above MTP4; MTP4 is 20.46% above MTP3 at 16K. MTP7 long decode is 21.57 tok/s. A single seed does not establish universal optimality."
+  },
+  "final_evaluation": {
+    "binary_sha256": "36b0f3638a11791c5fdded71e11b20facf2ba575a2dc99624ec8be8ab70d8e27",
+    "source_commit": null,
+    "quality_status": "PASS",
+    "quality": [
+      {
+        "trial_id": "heldout/ru_ledger/1024/seed-20261002",
+        "case_id": "heldout/ru_ledger/1024",
+        "kind": "quality",
+        "fixture_sha256": "49a4ff66b935b5cf04ebe4b767a4b12341a74a0d9b8d178630186c0da983c710",
+        "seed": 814742957,
+        "seed_repeat": 20261002,
+        "target_input_tokens": 1024,
+        "construction_input_tokens": 1028,
+        "construction_count_protocol": "anthropic_messages_count_tokens",
+        "output_budget": 32768,
+        "attempts": 1,
+        "verdict": "PASS",
+        "verdict_detail": "quality scorer passed",
+        "finish_reason": "stop",
+        "metrics": {
+          "wall_s": 4.4,
+          "stream_first_visible_token_s": null,
+          "prompt_tokens": 1028,
+          "completion_tokens": 232,
+          "reasoning_tokens": 218,
+          "cached_prompt_tokens": 0,
+          "native_prefill_s": 1.047784627,
+          "native_decode_s": 3.268487133,
+          "native_prefill_tok_s": 981.1176586388302,
+          "native_decode_tok_s": 70.67489960958645
+        },
+        "speculation": {
+          "draft_n": 308,
+          "draft_n_accepted": 158,
+          "acceptance_fraction": 0.512987012987013
+        }
+      },
+      {
+        "trial_id": "heldout/code_intervals/1024/seed-20261002",
+        "case_id": "heldout/code_intervals/1024",
+        "kind": "quality",
+        "fixture_sha256": "bba0637cee2d54cf903ebd3f2004f675f348edea785a975437e29713fa83f81b",
+        "seed": 3089396572,
+        "seed_repeat": 20261002,
+        "target_input_tokens": 1024,
+        "construction_input_tokens": 1043,
+        "construction_count_protocol": "anthropic_messages_count_tokens",
+        "output_budget": 32768,
+        "attempts": 1,
+        "verdict": "PASS",
+        "verdict_detail": "quality scorer passed",
+        "finish_reason": "stop",
+        "metrics": {
+          "wall_s": 26.2,
+          "stream_first_visible_token_s": null,
+          "prompt_tokens": 1043,
+          "completion_tokens": 1600,
+          "reasoning_tokens": 1477,
+          "cached_prompt_tokens": 0,
+          "native_prefill_s": 1.054517372,
+          "native_decode_s": 25.087227372,
+          "native_prefill_tok_s": 989.0780632867563,
+          "native_decode_tok_s": 63.73761341935511
+        },
+        "speculation": {
+          "draft_n": 2422,
+          "draft_n_accepted": 1014,
+          "acceptance_fraction": 0.4186622625928984
+        }
+      },
+      {
+        "trial_id": "heldout/logic_schedule/1024/seed-20261002",
+        "case_id": "heldout/logic_schedule/1024",
+        "kind": "quality",
+        "fixture_sha256": "a339fb5ca5c6f3e78b1b417bbd84495c8fb04d8053e6e0e70535dbd4d290ecaf",
+        "seed": 2026191810,
+        "seed_repeat": 20261002,
+        "target_input_tokens": 1024,
+        "construction_input_tokens": 1013,
+        "construction_count_protocol": "anthropic_messages_count_tokens",
+        "output_budget": 32768,
+        "attempts": 1,
+        "verdict": "PASS",
+        "verdict_detail": "quality scorer passed",
+        "finish_reason": "stop",
+        "metrics": {
+          "wall_s": 10.1,
+          "stream_first_visible_token_s": null,
+          "prompt_tokens": 1013,
+          "completion_tokens": 598,
+          "reasoning_tokens": 546,
+          "cached_prompt_tokens": 0,
+          "native_prefill_s": 0.934463508,
+          "native_decode_s": 9.114547837,
+          "native_prefill_tok_s": 1084.0444718575357,
+          "native_decode_tok_s": 65.49968365698973
+        },
+        "speculation": {
+          "draft_n": 864,
+          "draft_n_accepted": 384,
+          "acceptance_fraction": 0.4444444444444444
+        }
+      },
+      {
+        "trial_id": "heldout/retrieval/16384/seed-20261002",
+        "case_id": "heldout/retrieval/16384",
+        "kind": "quality",
+        "fixture_sha256": "298b61ed413c39ba4c71f51249f91db775d29f9a2c36650a28952359e6cfd42a",
+        "seed": 4173525403,
+        "seed_repeat": 20261002,
+        "target_input_tokens": 16384,
+        "construction_input_tokens": 16382,
+        "construction_count_protocol": "anthropic_messages_count_tokens",
+        "output_budget": 32768,
+        "attempts": 1,
+        "verdict": "PASS",
+        "verdict_detail": "quality scorer passed",
+        "finish_reason": "stop",
+        "metrics": {
+          "wall_s": 23.7,
+          "stream_first_visible_token_s": null,
+          "prompt_tokens": 16382,
+          "completion_tokens": 397,
+          "reasoning_tokens": 333,
+          "cached_prompt_tokens": 0,
+          "native_prefill_s": 18.606940647,
+          "native_decode_s": 5.052047603,
+          "native_prefill_tok_s": 880.424155200456,
+          "native_decode_tok_s": 78.38405951773848
+        },
+        "speculation": {
+          "draft_n": 485,
+          "draft_n_accepted": 291,
+          "acceptance_fraction": 0.6
+        }
+      },
+      {
+        "trial_id": "heldout/retrieval/131072/seed-20261002",
+        "case_id": "heldout/retrieval/131072",
+        "kind": "quality",
+        "fixture_sha256": "4c3afba0c0d93791589577a1de4d2564362b835e6fcbbe3a80e4ad9878e4eb21",
+        "seed": 1582985265,
+        "seed_repeat": 20261002,
+        "target_input_tokens": 131072,
+        "construction_input_tokens": 131092,
+        "construction_count_protocol": "anthropic_messages_count_tokens",
+        "output_budget": 32768,
+        "attempts": 1,
+        "verdict": "PASS",
+        "verdict_detail": "quality scorer passed",
+        "finish_reason": "stop",
+        "metrics": {
+          "wall_s": 203.3,
+          "stream_first_visible_token_s": null,
+          "prompt_tokens": 131092,
+          "completion_tokens": 279,
+          "reasoning_tokens": 215,
+          "cached_prompt_tokens": 0,
+          "native_prefill_s": 197.724945371,
+          "native_decode_s": 5.388768882,
+          "native_prefill_tok_s": 663.0018268763525,
+          "native_decode_tok_s": 51.5887777129574
+        },
+        "speculation": {
+          "draft_n": 300,
+          "draft_n_accepted": 211,
+          "acceptance_fraction": 0.7033333333333334
+        }
+      },
+      {
+        "trial_id": "heldout/retrieval/229248/seed-20261002",
+        "case_id": "heldout/retrieval/229248",
+        "kind": "quality",
+        "fixture_sha256": "4f59b6ccef8c315101d6565f559a83518b3dfe695acd6759cf63958797329eaa",
+        "seed": 2169337069,
+        "seed_repeat": 20261002,
+        "target_input_tokens": 229248,
+        "construction_input_tokens": 229233,
+        "construction_count_protocol": "anthropic_messages_count_tokens",
+        "output_budget": 32768,
+        "attempts": 1,
+        "verdict": "PASS",
+        "verdict_detail": "quality scorer passed",
+        "finish_reason": "stop",
+        "metrics": {
+          "wall_s": 427.2,
+          "stream_first_visible_token_s": null,
+          "prompt_tokens": 229233,
+          "completion_tokens": 383,
+          "reasoning_tokens": 319,
+          "cached_prompt_tokens": 0,
+          "native_prefill_s": 417.288799931,
+          "native_decode_s": 9.726668835,
+          "native_prefill_tok_s": 549.3389710864618,
+          "native_decode_tok_s": 39.27346622776224
+        },
+        "speculation": {
+          "draft_n": 425,
+          "draft_n_accepted": 292,
+          "acceptance_fraction": 0.6870588235294117
+        }
+      }
+    ],
+    "performance_status": "PASS_3_OF_3_FIXED_OUTPUT",
+    "performance": [
+      {
+        "trial_id": "heldout/perf_ru/1024/seed-20261002",
+        "case_id": "heldout/perf_ru/1024",
+        "kind": "performance",
+        "fixture_sha256": "b6ac96775aed78bd7ef798706860c0d3c8c230a0d3df98d5078816812c87275c",
+        "seed": 1344025369,
+        "seed_repeat": 20261002,
+        "target_input_tokens": 1024,
+        "construction_input_tokens": 1006,
+        "construction_count_protocol": "anthropic_messages_count_tokens",
+        "output_budget": 1024,
+        "attempts": 1,
+        "verdict": "PASS",
+        "verdict_detail": "fixed output cap reached",
+        "finish_reason": "length",
+        "metrics": {
+          "wall_s": 17.890243085999828,
+          "stream_first_visible_token_s": 0.9550352639998891,
+          "prompt_tokens": 1006,
+          "completion_tokens": 1024,
+          "reasoning_tokens": 0,
+          "cached_prompt_tokens": 0,
+          "native_prefill_s": 0.949660218,
+          "native_decode_s": 16.935062129,
+          "native_prefill_tok_s": 1059.3262526239675,
+          "native_decode_tok_s": 60.4072185981645
+        },
+        "speculation": {
+          "draft_n": 1590,
+          "draft_n_accepted": 625,
+          "acceptance_fraction": 0.39308176100628933
+        }
+      },
+      {
+        "trial_id": "heldout/perf_ru/16384/seed-20261002",
+        "case_id": "heldout/perf_ru/16384",
+        "kind": "performance",
+        "fixture_sha256": "abd1dbf646f1ad844c213226254ec3514ffac0cd97b6babb5dcc3b835f2de693",
+        "seed": 4204204080,
+        "seed_repeat": 20261002,
+        "target_input_tokens": 16384,
+        "construction_input_tokens": 16394,
+        "construction_count_protocol": "anthropic_messages_count_tokens",
+        "output_budget": 1024,
+        "attempts": 1,
+        "verdict": "PASS",
+        "verdict_detail": "fixed output cap reached",
+        "finish_reason": "length",
+        "metrics": {
+          "wall_s": 34.88639381299981,
+          "stream_first_visible_token_s": 18.8268211980012,
+          "prompt_tokens": 16394,
+          "completion_tokens": 1024,
+          "reasoning_tokens": 0,
+          "cached_prompt_tokens": 0,
+          "native_prefill_s": 18.81240451,
+          "native_decode_s": 16.059251743,
+          "native_prefill_tok_s": 871.4462838222269,
+          "native_decode_tok_s": 63.701598080116725
+        },
+        "speculation": {
+          "draft_n": 1382,
+          "draft_n_accepted": 677,
+          "acceptance_fraction": 0.48986975397973953
+        }
+      },
+      {
+        "trial_id": "heldout/perf_ru/229248/seed-20261002",
+        "case_id": "heldout/perf_ru/229248",
+        "kind": "performance",
+        "fixture_sha256": "a7256f59daff6b36ff5a55b49ac027fe1da58011b5992b3ed69905fd8e55d2dd",
+        "seed": 538112245,
+        "seed_repeat": 20261002,
+        "target_input_tokens": 229248,
+        "construction_input_tokens": 229245,
+        "construction_count_protocol": "anthropic_messages_count_tokens",
+        "output_budget": 1024,
+        "attempts": 1,
+        "verdict": "PASS",
+        "verdict_detail": "fixed output cap reached",
+        "finish_reason": "length",
+        "metrics": {
+          "wall_s": 443.618539178,
+          "stream_first_visible_token_s": 417.3511935530005,
+          "prompt_tokens": 229245,
+          "completion_tokens": 1024,
+          "reasoning_tokens": 0,
+          "cached_prompt_tokens": 0,
+          "native_prefill_s": 417.192014634,
+          "native_decode_s": 26.266572782,
+          "native_prefill_tok_s": 549.4951771814599,
+          "native_decode_tok_s": 38.946839714888235
+        },
+        "speculation": {
+          "draft_n": 1079,
+          "draft_n_accepted": 767,
+          "acceptance_fraction": 0.7108433734939759
+        }
+      }
+    ],
+    "deployment_status": "PENDING",
+    "publication_status": "PENDING",
+    "matched_changes_vs_baseline": [
+      {
+        "trial_id": "heldout/perf_ru/1024/seed-20261002",
+        "actual_input_tokens": 1006,
+        "prefill_latency_change_fraction": 0.05532350103494443,
+        "prefill_throughput_change_fraction": -0.05242326261159658,
+        "decode_throughput_change_fraction": 0.04145713961082831,
+        "wall_latency_change_fraction": -0.035086775501934286
+      },
+      {
+        "trial_id": "heldout/perf_ru/16384/seed-20261002",
+        "actual_input_tokens": 16394,
+        "prefill_latency_change_fraction": 0.2894987419494224,
+        "prefill_throughput_change_fraction": -0.22450486575253847,
+        "decode_throughput_change_fraction": 0.1331715327852807,
+        "wall_latency_change_fraction": 0.06362981956498226
+      },
+      {
+        "trial_id": "heldout/perf_ru/229248/seed-20261002",
+        "actual_input_tokens": 229245,
+        "prefill_latency_change_fraction": -0.2973757675330595,
+        "prefill_throughput_change_fraction": 0.42323585466012426,
+        "decode_throughput_change_fraction": 0.18857894701795352,
+        "wall_latency_change_fraction": -0.29037118239725246
+      }
+    ]
+  },
+  "limitations": [
+    "One prompt and one seed-repeat per performance length, no repeated interleaved A/B.",
+    "MTP4 intermediate prefill overlapped about 30 seconds of CPU diagnostic compilation; no GPU competition. MTP3/7 had no compilation overlap.",
+    "Arithmetic and draft acceptance changed; model decode differences are not pure kernel speedups.",
+    "Original candidate metadata labels include qualified, but these are inherited labels, not evidence of model qualification.",
+    "MTP4 and MTP3/7 use different binary hashes with the same intended production math and historical T1024 gate. Final broader-gate binary must be measured separately.",
+    "Baseline 131K performance ended after 702 output tokens and is excluded from fixed-output comparisons.",
+    "Six quality cases are a narrow regression gate; second repeats, perf code templates, general reasoning parity, image quality and full-capacity output are not established.",
+    "Public metrics contain selected measurements and verdicts, not raw generated answers or private operational state."
+  ],
+  "comparison": {
+    "paired": [
+      {
+        "trial_id": "heldout/code_intervals/1024/seed-20261002",
+        "kind": "quality",
+        "baseline_ok": true,
+        "candidate_ok": true
+      },
+      {
+        "trial_id": "heldout/logic_schedule/1024/seed-20261002",
+        "kind": "quality",
+        "baseline_ok": true,
+        "candidate_ok": true
+      },
+      {
+        "trial_id": "heldout/perf_ru/1024/seed-20261002",
+        "kind": "performance",
+        "baseline_ok": true,
+        "candidate_ok": true,
+        "prefill_comparable": true,
+        "prefill_speedup": 0.9475767373884034,
+        "decode_speedup": 1.0414571396108283
+      },
+      {
+        "trial_id": "heldout/perf_ru/16384/seed-20261002",
+        "kind": "performance",
+        "baseline_ok": true,
+        "candidate_ok": true,
+        "prefill_comparable": true,
+        "prefill_speedup": 0.7754951342474615,
+        "decode_speedup": 1.1331715327852807
+      },
+      {
+        "trial_id": "heldout/perf_ru/229248/seed-20261002",
+        "kind": "performance",
+        "baseline_ok": true,
+        "candidate_ok": true,
+        "prefill_comparable": true,
+        "prefill_speedup": 1.4232358546601243,
+        "decode_speedup": 1.1885789470179535
+      },
+      {
+        "trial_id": "heldout/retrieval/131072/seed-20261002",
+        "kind": "quality",
+        "baseline_ok": true,
+        "candidate_ok": true
+      },
+      {
+        "trial_id": "heldout/retrieval/16384/seed-20261002",
+        "kind": "quality",
+        "baseline_ok": true,
+        "candidate_ok": true
+      },
+      {
+        "trial_id": "heldout/retrieval/229248/seed-20261002",
+        "kind": "quality",
+        "baseline_ok": true,
+        "candidate_ok": true
+      },
+      {
+        "trial_id": "heldout/ru_ledger/1024/seed-20261002",
+        "kind": "quality",
+        "baseline_ok": true,
+        "candidate_ok": true
+      }
+    ],
+    "paired_quality_pass_at_1": {
+      "baseline_passed": 6,
+      "candidate_passed": 6,
+      "trials": 6
+    },
+    "incomplete_baseline": [
+      "heldout/perf_code/1024/seed-20261002",
+      "heldout/perf_code/131072/seed-20261002",
+      "heldout/perf_code/16384/seed-20261002",
+      "heldout/perf_code/229248/seed-20261002"
+    ],
+    "incomplete_candidate": [
+      "heldout/perf_code/1024/seed-20261002",
+      "heldout/perf_code/131072/seed-20261002",
+      "heldout/perf_code/16384/seed-20261002",
+      "heldout/perf_code/229248/seed-20261002",
+      "heldout/perf_ru/131072/seed-20261002"
+    ],
+    "unpaired_baseline": [
+      "heldout/perf_ru/131072/seed-20261002"
+    ],
+    "unpaired_candidate": [],
+    "limits": "Only valid fixed-output pairs support speed comparisons; quality rows compare pass@1. Different cache residency excludes prefill speedup. Small heldout suite is not a reasoning benchmark."
+  }
+}

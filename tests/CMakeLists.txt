@@ -265,6 +265,13 @@ ninfer_add_op_test(ninfer_linear_dynamic_grouped_conv_add_test SOURCES ops/test_
 
 # Stateful, fused, and exact-shape Ops remain central even when the current implementation domain
 # is one checkpoint/device.
+add_executable(ninfer_softmax_attention_criterion_test
+  ops/softmax_attention/criterion_test.cpp)
+target_include_directories(ninfer_softmax_attention_criterion_test PRIVATE
+  ${CMAKE_CURRENT_SOURCE_DIR})
+add_test(NAME ninfer_softmax_attention_criterion_test
+  COMMAND ninfer_softmax_attention_criterion_test)
+
 ninfer_add_op_test(ninfer_softmax_attention_test
   SOURCES ops/softmax_attention/main.cpp
           ops/softmax_attention/causal_cache.cpp

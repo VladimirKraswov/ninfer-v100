@@ -47,6 +47,7 @@ endif()
 
 # --- Global settings ---------------------------------------------------------
 option(NINFER_BUILD_APPS "Build the NInfer CLI and server" ON)
+option(NINFER_VOLTA_PACKED_PREFILL "Use packed-GQA FP32 prefill for qualified SM70 shapes" ON)
 option(BUILD_TESTING "Build NInfer tests" OFF)
 option(NINFER_BUILD_BENCHMARKS "Build NInfer benchmarks" OFF)
 
@@ -64,8 +65,8 @@ if(CMAKE_GENERATOR MATCHES "Ninja")
   set(CMAKE_JOB_POOL_LINK cuda_link)
 endif()
 
-# sm_120a needs CUDA 13.1+; the sm_70 Volta port targets CUDA 12.8, the last
-# toolkit that still assembles sm_70 (CUDA 13.x dropped it). Each arch enforces
+# sm_120a needs CUDA 13.1+; the sm_70 Volta deployment is qualified on CUDA
+# 12.9 and retains a 12.8 minimum (CUDA 13.x dropped sm_70). Each arch enforces
 # its own floor rather than a single global one.
 if(CMAKE_CUDA_ARCHITECTURES STREQUAL "120a" AND CMAKE_CUDA_COMPILER_VERSION VERSION_LESS 13.1)
   message(FATAL_ERROR

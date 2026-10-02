@@ -569,6 +569,28 @@ complete Op latency. Payload rates exclude repeated reads and do not measure DRA
 Logical FLOPs do not model private operand conversion, padding, or additional quantization work;
 the benchmark therefore does not infer Tensor Core utilization from a storage-format label.
 
+For the V100 laboratory build, `NINFER_V100_INT8_SPLIT_KEYS` privately selects long-context
+INT8 D256/H24/KV4 partitioning above 16,390 visible keys. Accepted values are
+128/192/256/384/480/512/640/768/1024/1536/2048; unset preserves 480. The existing maximum split
+capacity still applies. The value is resolved once per process and captured in both producer and
+reduction kernels; restart the process between choices. BF16, FP8 and other GPU paths are unchanged.
+This is a tuning aid, not a verified production recommendation. Check the independent
+`--volta-long-int8-only` oracle subset and whole-model prefill/decode before adopting a winner.
+
+`NINFER_V100_INT8_QPN_TAIL=1` opts into the D256/H24/KV4 T7/T8 candidate above a
+16,390-key launch envelope. Two compact tail warps process rows 32–47 while sharing
+the first 32 rows' KV walk. Unset or `0` keeps the established route. This selection
+is also process-fixed and graph-safe; it changes no persistent cache representation,
+split/reduction layout, or public Op contract. Qualify with the same long INT8 oracle,
+then compare T7/T8 attention latency and matched whole-model MTP profiles.
+
+```bash
+NINFER_V100_INT8_SPLIT_KEYS=768 ./build-v100/bench/ninfer_causal_softmax_attention_bench \
+  --entry both --geometry d256-h24-kv4 --kv-dtype int8 --batch 1 \
+  --tokens 1,3,5,7,8 --context 32768,131072,262128 \
+  --execution graph --cache cold --mapping fragmented --warmup 5 --repeat 21
+```
+
 `ninfer_context_softmax_attention_bench` measures the public read-only context-plus-query contract
 at Q32/KV8/D128 with BF16 context storage. `T` is a complete non-causal query block and `L` is its
 external context length.
