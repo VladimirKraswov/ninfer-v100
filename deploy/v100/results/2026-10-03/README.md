@@ -1,6 +1,6 @@
 # V100 / Qwen3.8-27B optimization evidence, 2026-10-03
 
-**Status: qualified release profile; publication and deployment are pending.**
+**Status: published, installed and production-smoke verified. The prior GPU service is restored; Qwen is currently stopped and not GPU-resident.**
 The final MTP4 profile passed 13 focused and four tail GPU cases, all six
 reasoning-quality cases on the first attempt, and three valid fixed-output
 performance requests. At 229245 input tokens, full-request latency fell 29.0%.
@@ -261,7 +261,9 @@ the stated regression gate, not general reasoning parity.
 | Same six quality cases and budgets | PASS 6/6, first attempt |
 | Matched 1K/16K/~229K fixed-output performance | PASS 3/3 valid fixed-output pairs |
 | Release-profile qualification | PASS within the stated numerical, quality and performance scope |
-| Publication and deployment | PENDING |
+| Publication | Commit `4cb0ba78b6a64b3ee0a6f8200ec8aab5d474608a` on GitHub `master` |
+| Installation and production verification | Exact qualified binary installed; 3/3 smoke cases PASS, first attempt |
+| Current GPU residency | Prior service restored and GPU-resident; Qwen stopped and not resident |
 
 Build and test commands, including `--volta-prefill-tail-only`, are in the
 [deployment guide](../../README.md). Packed prefill is now **enabled by default**
@@ -271,7 +273,42 @@ GPU arithmetic change. `OFF` is a diagnostic fallback control and does not
 recreate the historical baseline. QPN tail remains optional with runtime default
 zero; this selected profile uses `NINFER_V100_INT8_QPN_TAIL=1`.
 
+## Publication and production verification
+
+The release source is published as
+[4cb0ba78b6a64b3ee0a6f8200ec8aab5d474608a](https://github.com/VladimirKraswov/ninfer-v100/commit/4cb0ba78b6a64b3ee0a6f8200ec8aab5d474608a)
+on `master`. The installed source manifest identifies that commit, and the
+installed server hash is the exact qualified
+`36b0f3638a11791c5fdded71e11b20facf2ba575a2dc99624ec8be8ab70d8e27`.
+The service was active/running; the model endpoint advertised `qwen-v100` with
+`max_model_len=262144`.
+
+Production uses MTP4, chunk2048, INT8-G64 KV, QPN tail enabled and split480, with
+Vision and preserved thinking. Prefix reuse is **enabled** in production; the
+controlled performance campaign disabled it. Production defaults are
+`medium`/8192 thinking and 32768 output, while the quality gate explicitly
+requested `xhigh`/16384. These differences are preserved, not presented as a
+controlled comparison of cached and uncached requests.
+
+| Production smoke | Attempts | Finish reason | Input / output / reasoning tokens | Verdict |
+|---|---:|---|---:|---|
+| First calculator tool selection | 1 | `tool_calls` | 337 / 66 / 33 | PASS |
+| Second calculator tool selection | 1 | `tool_calls` | 320 / 59 / 23 | PASS |
+| Simple image-color case | 1 | `stop` | 269 / 77 / 72 | PASS |
+
+All three used medium/8192 thinking, a 32768 output ceiling and zero cached input.
+The two tool checks verify first-turn tool selection and arguments, not a complete
+multi-turn tool-execution loop. One image case is a smoke check, not broad Vision
+qualification. After verification, the GPU was restored to its prior service.
+At 2026-10-02 22:35 UTC, that service was healthy, production-ready, accepted
+jobs/realtime requests and had a model resident on V100 (30665 MiB used). The
+maintenance state was released. **Qwen remains installed and verified, but is
+currently stopped and not GPU-resident.** This restoration receipt establishes
+service readiness and GPU use; it does not assert an unchanged container image
+after independent service updates.
+
 ## Limits of the evidence
+
 
 - One performance prompt/seed per length, without repeated interleaved A/B or a
   confidence interval. Generated paths and acceptance can change despite equal
@@ -282,7 +319,8 @@ zero; this selected profile uses `NINFER_V100_INT8_QPN_TAIL=1`.
 - The six quality cases are a narrow regression gate. A second seed-repeat,
   performance code templates, general reasoning parity, arbitrary long-document
   reasoning and image quality are not established by this campaign.
-- Vision remains enabled, but the October quality cases are text-only. About
+- Vision remains enabled; the six October quality cases are text-only and the
+  separate production smoke adds one simple image case. About
   229K actual input validates that scenario, not every use of the full capacity
   or generation of all 32768 reserved output tokens.
 - Model, quantization and artifact remain fixed. These results cannot be used to

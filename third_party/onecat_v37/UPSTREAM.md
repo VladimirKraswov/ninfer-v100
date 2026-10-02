@@ -76,5 +76,9 @@ envelope changed. These checks do not claim a measured gain at every
 intermediate width or establish model reasoning quality from kernel timing.
 The separate selected-model six-case quality suite and three matched fixed-output
 performance pairs also passed. The release profile is qualified within the
-documented scope; publication and deployment remain pending. See the
+documented scope, published and installed; three production smoke checks passed.
+The prior GPU service has been restored; Qwen is installed but currently stopped
+and not GPU-resident. These results qualify the implementation independently of
+which service currently owns the GPU.
+See the
 [October evidence report](../../deploy/v100/results/2026-10-03/README.md).

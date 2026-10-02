@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "report_date": "2026-10-03",
-  "status": "qualified_release_profile_publication_and_deployment_pending",
+  "status": "published_installed_verified_prior_gpu_service_restored_qwen_not_resident",
   "model": {
     "name": "Huihui abliterated Qwen3.8-27B NVFP4",
     "artifact_format": "ninfer v2",
@@ -1309,7 +1309,7 @@
   },
   "final_evaluation": {
     "binary_sha256": "36b0f3638a11791c5fdded71e11b20facf2ba575a2dc99624ec8be8ab70d8e27",
-    "source_commit": null,
+    "source_commit": "4cb0ba78b6a64b3ee0a6f8200ec8aab5d474608a",
     "quality_status": "PASS",
     "quality": [
       {
@@ -1613,8 +1613,8 @@
         }
       }
     ],
-    "deployment_status": "PENDING",
-    "publication_status": "PENDING",
+    "deployment_status": "INSTALLED_AND_PRODUCTION_SMOKE_VERIFIED",
+    "publication_status": "PUBLISHED",
     "matched_changes_vs_baseline": [
       {
         "trial_id": "heldout/perf_ru/1024/seed-20261002",
@@ -1650,7 +1650,8 @@
     "MTP4 and MTP3/7 use different binary hashes with the same intended production math and historical T1024 gate. Final broader-gate binary must be measured separately.",
     "Baseline 131K performance ended after 702 output tokens and is excluded from fixed-output comparisons.",
     "Six quality cases are a narrow regression gate; second repeats, perf code templates, general reasoning parity, image quality and full-capacity output are not established.",
-    "Public metrics contain selected measurements and verdicts, not raw generated answers or private operational state."
+    "Public metrics contain selected measurements and verdicts, not raw generated answers or private operational state.",
+    "Production prefix reuse is enabled and defaults to medium/8192 thinking; the controlled benchmark disabled prefix reuse and quality explicitly requested xhigh/16384. Smoke results do not replace that controlled comparison."
   ],
   "comparison": {
     "paired": [
@@ -1741,5 +1742,121 @@
     ],
     "unpaired_candidate": [],
     "limits": "Only valid fixed-output pairs support speed comparisons; quality rows compare pass@1. Different cache residency excludes prefill speedup. Small heldout suite is not a reasoning benchmark."
+  },
+  "publication": {
+    "status": "PUBLISHED",
+    "repository": "https://github.com/VladimirKraswov/ninfer-v100",
+    "branch": "master",
+    "source_commit": "4cb0ba78b6a64b3ee0a6f8200ec8aab5d474608a",
+    "commit_url": "https://github.com/VladimirKraswov/ninfer-v100/commit/4cb0ba78b6a64b3ee0a6f8200ec8aab5d474608a"
+  },
+  "deployment": {
+    "status": "INSTALLED_AND_PRODUCTION_SMOKE_VERIFIED",
+    "installed_binary_sha256": "36b0f3638a11791c5fdded71e11b20facf2ba575a2dc99624ec8be8ab70d8e27",
+    "installed_source_commit": "4cb0ba78b6a64b3ee0a6f8200ec8aab5d474608a",
+    "service_state_at_verification": "active/running",
+    "model_id": "qwen-v100",
+    "advertised_max_model_len": 262144,
+    "draft_tokens": 4,
+    "prefill_chunk_tokens": 2048,
+    "qpn_tail": 1,
+    "split_keys": 480,
+    "prefix_reuse": true,
+    "default_reasoning_effort": "medium",
+    "default_thinking_budget_tokens": 8192,
+    "default_max_output_tokens": 32768,
+    "current_gpu_residency": "PRIOR_SERVICE_RESTORED_QWEN_NOT_RESIDENT",
+    "residency_note": "The qualified Qwen installation and production smoke are verified. The GPU was subsequently restored to the prior service; Qwen is currently stopped and not resident.",
+    "qwen_currently_resident": false
+  },
+  "production_smoke": {
+    "status": "PASS_3_OF_3_FIRST_ATTEMPT",
+    "scope": "Two first-turn calculator tool selections and one simple image-color case; not a multi-turn agent or broad vision benchmark.",
+    "cases": [
+      {
+        "case_id": "tools-single-call",
+        "kind": "tools_turn1",
+        "attempts": 1,
+        "seed": 3373088339,
+        "effort": "medium",
+        "max_tokens": 32768,
+        "thinking_budget": 8192,
+        "wall_s": 1.2,
+        "verdict": "PASS",
+        "finish_reason": "tool_calls",
+        "usage": {
+          "completion_tokens": 66,
+          "completion_tokens_details": {
+            "reasoning_tokens": 33
+          },
+          "prompt_tokens": 337,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          },
+          "total_tokens": 403
+        }
+      },
+      {
+        "case_id": "tools-single-call-2",
+        "kind": "tools_turn1",
+        "attempts": 1,
+        "seed": 926949609,
+        "effort": "medium",
+        "max_tokens": 32768,
+        "thinking_budget": 8192,
+        "wall_s": 1.1,
+        "verdict": "PASS",
+        "finish_reason": "tool_calls",
+        "usage": {
+          "completion_tokens": 59,
+          "completion_tokens_details": {
+            "reasoning_tokens": 23
+          },
+          "prompt_tokens": 320,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          },
+          "total_tokens": 379
+        }
+      },
+      {
+        "case_id": "vis-arrow-color",
+        "kind": "vision",
+        "attempts": 1,
+        "seed": 737202817,
+        "effort": "medium",
+        "max_tokens": 32768,
+        "thinking_budget": 8192,
+        "wall_s": 1.8,
+        "verdict": "PASS",
+        "finish_reason": "stop",
+        "usage": {
+          "completion_tokens": 77,
+          "completion_tokens_details": {
+            "reasoning_tokens": 72
+          },
+          "prompt_tokens": 269,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          },
+          "total_tokens": 346
+        }
+      }
+    ]
+  },
+  "restoration": {
+    "status": "COMPLETE",
+    "verified_at_utc": "2026-10-02T22:35:24Z",
+    "prior_gpu_service_health": "ok",
+    "prior_gpu_service_gpu_resident": true,
+    "gpu_memory_used_mib": 30665,
+    "production_ready": true,
+    "accepts_jobs": true,
+    "accepts_realtime": true,
+    "ready_contracts_confirmed": true,
+    "maintenance_state": "released",
+    "temporary_operator_credential": "revoked",
+    "qwen_runtime_stopped": true,
+    "scope": "Restored service health, readiness and actual GPU residency; no claim that the prior container image is byte-identical after independent service updates."
   }
 }

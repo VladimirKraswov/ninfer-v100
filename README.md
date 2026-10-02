@@ -28,8 +28,9 @@ The [October optimization report](deploy/v100/results/2026-10-03/README.md) reco
 matched Huihui Qwen3.8-27B measurements at 262144 context with Vision enabled:
 6/6 quality PASS, 29.0% lower request latency at about 229K input, and a 6.4%
 request-latency regression at 16K. It includes numerical qualification and the
-limits of the three fixed-output performance pairs. Publication and installation
-of this qualified profile remain pending. The
+limits of the three fixed-output performance pairs. The qualified profile is
+published, installed and passed three production smoke checks. The prior GPU
+service has been restored; Qwen is currently stopped and not GPU-resident. The
 [September deployment qualification](deploy/v100/results/2026-09-23/README.md)
 is retained as a historical campaign with its own artifact and protocol.
 

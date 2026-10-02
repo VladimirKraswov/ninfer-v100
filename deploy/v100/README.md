@@ -158,7 +158,15 @@ three valid pairs. At about 229K, prefill is 593.763 → 417.192 s (−29.7% lat
 decode 32.768 → 38.947 tok/s (+18.9%), and wall 625.142 → 443.619 s (−29.0%).
 At 16K, wall time increases 32.799 → 34.886 s (+6.4%); at 1K it falls 3.5%.
 This is one prompt/seed per length, not a universal speedup. The profile is
-qualified within the report's scope; publication and deployment remain pending.
+qualified within the report's scope, published and installed as commit
+`4cb0ba78b6a64b3ee0a6f8200ec8aab5d474608a` with the exact qualified binary.
+The active service advertised 262144 context and passed two first-turn tool
+checks plus one simple Vision smoke, all on the first attempt. Production enables
+prefix reuse and defaults to medium/8192, while this campaign explicitly used
+uncached perf and xhigh/16384 quality. The prior GPU service has been restored:
+health, production readiness and actual GPU residency were verified, and
+maintenance released. Qwen is installed and verified but currently stopped and
+not GPU-resident. Details are in the October report.
 Baseline 128K early EOS at 702 output tokens remains excluded.
 The final binary was compiled with explicit `ON`; changing the CMake default
 introduces no GPU arithmetic change. Hardware was requested at 1530/877 MHz,
