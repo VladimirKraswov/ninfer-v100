@@ -90,7 +90,13 @@ def build_object_plan(resources: Mapping[str, bytes]) -> ObjectPlan:
     return family_conversion.build_object_plan(inventory.OBJECT_SPECS, resources)
 
 
-def load_resources(model_dir: str | Path) -> tuple[ResourcePayload, ...]:
+def load_resources(model_dir: str | Path, checkpoint_profile: str = "official") -> tuple[ResourcePayload, ...]:
+    if checkpoint_profile == "pi":
+        from .pi_checkpoint import validate_view
+        validate_view(Path(model_dir))
+        return family_conversion.load_resources(model_dir, inventory.RESOURCE_SPECS)
+    if checkpoint_profile != "official":
+        raise ValueError("unregistered checkpoint profile")
     expected_names = tuple(OFFICIAL_RESOURCE_SHA256)
     spec_names = tuple(spec.name for spec in inventory.RESOURCE_SPECS)
     if spec_names != expected_names:
@@ -120,6 +126,7 @@ def load_resources(model_dir: str | Path) -> tuple[ResourcePayload, ...]:
 def preflight_conversion(
     model_dir: str | Path,
     dflash2_model_dir: str | Path,
+    checkpoint_profile: str = "official",
 ) -> ConversionPreflight:
     model = Path(model_dir)
     dflash2_model = Path(dflash2_model_dir)
@@ -135,7 +142,7 @@ def preflight_conversion(
     preflight_inventory()
     base_source = recipe.preflight_sources(model)
     dflash2_source = dflash2_recipe.preflight_sources(dflash2_model)
-    resources = load_resources(model)
+    resources = load_resources(model, checkpoint_profile)
     resource_map = {resource.name: resource.data for resource in resources}
     object_plan = build_object_plan(resource_map)
     ranking = _repo_root() / draft_head.DEFAULT_RANKING
@@ -240,13 +247,14 @@ def convert(
     out_path: str | Path,
     *,
     device: str | torch.device = "cuda",
+    checkpoint_profile: str = "official",
 ) -> Path:
     started = time.perf_counter()
     model = Path(model_dir)
     output = Path(out_path)
     requested_device = str(device)
     resolved_device = pick_device(device)
-    preflight = preflight_conversion(model, dflash2_model_dir)
+    preflight = preflight_conversion(model, dflash2_model_dir, checkpoint_profile)
 
     print(
         f"preflight complete: {len(preflight.object_plan.objects)} objects, "
@@ -323,6 +331,11 @@ def convert(
         device=resolved_device,
         ranking_path=ranking,
     )
+    if checkpoint_profile == "pi":
+        from .pi_checkpoint import validate_view
+        report["source"]["base"] = dict(validate_view(model), model_path=str(model.resolve()))
+        report["source"]["dflash2"] = {"repository": "bytkim/Qwen3.8-27B-pi", "revision": report["source"]["base"]["revision"], "subdirectory": "dflash2", "mode": "embedded companion, unused by MTP serving"}
+        report["recipe_id"] = "qwen3_8_27b-pi-groupwise-v2"
     report_path = Path(str(output) + ".conversion.json")
     with report_path.open("w", encoding="utf-8") as handle:
         json.dump(report, handle, ensure_ascii=False, indent=2)
@@ -340,8 +353,9 @@ def main(argv: Sequence[str] | None = None) -> None:
     parser.add_argument("--dflash2-model", required=True, type=Path)
     parser.add_argument("--out", required=True, type=Path)
     parser.add_argument("--device", default="cuda")
+    parser.add_argument("--checkpoint-profile", choices=("official", "pi"), default="official")
     args = parser.parse_args(argv)
-    convert(args.model, args.dflash2_model, args.out, device=args.device)
+    convert(args.model, args.dflash2_model, args.out, device=args.device, checkpoint_profile=args.checkpoint_profile)
 
 
 if __name__ == "__main__":

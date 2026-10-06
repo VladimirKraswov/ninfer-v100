@@ -434,6 +434,27 @@ int test_tokenizer_config_merge() {
                           "tokenizer_config.json token did not merge exactly");
     }
 
+    auto standalone = resources();
+    auto tokenizer_json = nlohmann::json::parse(standalone.tokenizer_json);
+    auto config_json = nlohmann::json::parse(standalone.tokenizer_config_json);
+    for (const auto& item : config_json["added_tokens_decoder"].items()) {
+        const int id = std::stoi(item.key());
+        if (id < 248070) continue;
+        auto token = item.value(); token["id"] = id;
+        tokenizer_json["added_tokens"].push_back(std::move(token));
+    }
+    config_json.erase("added_tokens_decoder");
+    standalone.tokenizer_json = tokenizer_json.dump();
+    standalone.tokenizer_config_json = config_json.dump();
+    fi::Tokenizer exported({.tokenizer_json = standalone.tokenizer_json,
+                            .tokenizer_config_json = standalone.tokenizer_config_json,
+                            .generation_config_json = standalone.generation_config_json});
+    for (const auto& [text, id] : appended) {
+        failures += check(exported.encode(text) == std::vector<int>{id} && exported.is_special_token(id) &&
+                          exported.decode_token_bytes(id) == text,
+                          "standalone added tokens changed their exact encoding or special policy");
+    }
+
     FrontendResources conflicting = resources();
     nlohmann::json config         = nlohmann::json::parse(conflicting.tokenizer_config_json);
     config["added_tokens_decoder"]["248045"]["special"] = false;
@@ -1084,6 +1105,24 @@ int test_official_resource_guards() {
     int failures =
         check(throws_invalid_argument([&] { (void)FrontendFactory::create_component(stale_pad); }),
               "stale Unsloth pad-token policy was accepted");
+
+    FrontendResources standalone = resources();
+    auto exported = nlohmann::json::parse(standalone.tokenizer_config_json);
+    exported.erase("add_bos_token");
+    exported.erase("chat_template");
+    exported["bos_token"] = nullptr;
+    standalone.tokenizer_config_json = exported.dump();
+    failures += check(!throws_invalid_argument([&] { (void)FrontendFactory::create_component(standalone); }),
+                      "registered standalone template with null BOS was refused");
+    exported.erase("bos_token");
+    standalone.tokenizer_config_json = exported.dump();
+    failures += check(throws_invalid_argument([&] { (void)FrontendFactory::create_component(standalone); }),
+                      "unspecified BOS prefix policy was accepted");
+    exported["bos_token"] = nullptr;
+    exported["add_bos_token"] = true;
+    standalone.tokenizer_config_json = exported.dump();
+    failures += check(throws_invalid_argument([&] { (void)FrontendFactory::create_component(standalone); }),
+                      "explicit BOS insertion was accepted");
 
     FrontendResources mismatched       = resources();
     nlohmann::json mismatched_config   = nlohmann::json::parse(mismatched.tokenizer_config_json);

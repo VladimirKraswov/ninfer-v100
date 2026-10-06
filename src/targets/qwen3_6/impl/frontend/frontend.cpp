@@ -203,7 +203,11 @@ void validate_registered_processor(const fi::ProcessorOptions& options) {
 void validate_tokenizer_config(const FrontendResources& resources) {
     const Json tokenizer_config =
         parse_resource_json(resources.tokenizer_config_json, "tokenizer_config.json");
-    if (tokenizer_config.value("add_bos_token", true) ||
+    // Newer Transformers exports omit add_bos_token when no BOS token exists.
+    // Accept that explicit null-BOS contract, never an unspecified prefix policy.
+    const bool null_bos = tokenizer_config.contains("bos_token") &&
+                          tokenizer_config.at("bos_token").is_null();
+    if (tokenizer_config.value("add_bos_token", !null_bos) ||
         tokenizer_config.value("add_prefix_space", true)) {
         throw std::invalid_argument(
             "tokenizer_config.json does not match Qwen3.6 tokenizer prefix semantics");
@@ -213,8 +217,10 @@ void validate_tokenizer_config(const FrontendResources& resources) {
         throw std::invalid_argument(
             "tokenizer_config.json does not use the official <|endoftext|> pad token");
     }
-    if (!tokenizer_config.contains("chat_template") ||
-        !tokenizer_config.at("chat_template").is_string()) {
+    // Transformers can export the template solely as chat_template.jinja.
+    // The standalone template still passes the exact registered digest resolver.
+    if (!tokenizer_config.contains("chat_template")) return;
+    if (!tokenizer_config.at("chat_template").is_string()) {
         throw std::invalid_argument(
             "tokenizer_config.json.chat_template must contain the loaded chat template");
     }

@@ -1,0 +1,26 @@
+[Unit]
+Description=NInfer V100 single-resident model service
+After=network-online.target nvidia-persistenced.service
+Wants=network-online.target
+RequiresMountsFor=/srv/ninfer-v100-lab
+Conflicts=ninfer-v100.service
+StartLimitIntervalSec=300
+StartLimitBurst=3
+
+[Service]
+Type=exec
+User=vladimir
+WorkingDirectory=/srv/ninfer-v100-lab
+EnvironmentFile=/srv/ninfer-v100-lab/model-switch/model-control.env
+ExecStartPre=+/usr/bin/nvidia-smi -pm 1
+ExecStartPre=+/usr/bin/nvidia-smi -ac 877,1530
+ExecStart=/usr/bin/python3 /srv/ninfer-v100-lab/model-switch/model_gateway.py /srv/ninfer-v100-lab/model-switch/registry.json --host 192.168.31.93 --port 8080 --state-dir /srv/ninfer-v100-lab/model-switch/state
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=120
+KillMode=control-group
+LimitNOFILE=65536
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target

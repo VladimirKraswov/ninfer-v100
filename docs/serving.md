@@ -3,6 +3,10 @@
 `build/apps/ninfer-serve` loads one registered artifact and exposes OpenAI- and
 Anthropic-compatible HTTP endpoints over one resident NInfer Engine.
 
+For explicit single-resident model switching and startup progress, see
+[V100 model gateway](../deploy/v100/MODEL-SWITCHING.md). The native server still
+loads one artifact; the external supervisor drains and replaces its child.
+
 ## Start the server
 
 ```bash

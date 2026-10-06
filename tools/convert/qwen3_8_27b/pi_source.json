@@ -1,0 +1,192 @@
+{
+  "repository": "bytkim/Qwen3.8-27B-pi",
+  "revision": "34d3f21045f7b41453e66c39e137cfc818a603ce",
+  "files": [
+    {
+      "path": "LICENSE",
+      "size": 11544,
+      "sha256": null,
+      "git_blob": "f938136e3adacfd92be087f6e113b5d6d97f678f"
+    },
+    {
+      "path": "NOTICE",
+      "size": 1652,
+      "sha256": null,
+      "git_blob": "38a5f4d8fe17a4ec8ef0090f701336a973b1b9fe"
+    },
+    {
+      "path": "README.md",
+      "size": 10060,
+      "sha256": null,
+      "git_blob": "fd733b103288f309f6937bb7f276f2698d06b339"
+    },
+    {
+      "path": "chat_template.jinja",
+      "size": 8952,
+      "sha256": null,
+      "git_blob": "c0c686f9c38d70d179fb7b5f5aa7530bc913dda3"
+    },
+    {
+      "path": "config.json",
+      "size": 3713,
+      "sha256": null,
+      "git_blob": "2dd6d765fa0eadd82a1c58aacbf74b69aec62a7f"
+    },
+    {
+      "path": "dflash2/LICENSE",
+      "size": 11358,
+      "sha256": null,
+      "git_blob": "d645695673349e3947e8e5ae42332d0ac3164cd7"
+    },
+    {
+      "path": "dflash2/README.md",
+      "size": 908,
+      "sha256": null,
+      "git_blob": "72ae4f26ac4733891c1b6740fe70a5c8e40452e9"
+    },
+    {
+      "path": "dflash2/UPSTREAM_README.md",
+      "size": 5399,
+      "sha256": null,
+      "git_blob": "f753df682b9f4281444f209c4deb14fc3a9894f1"
+    },
+    {
+      "path": "dflash2/assets/dflash2-figure.png",
+      "size": 286889,
+      "sha256": "6d8dcc9a9472bddb644c881fe83050b5343d09bf5ffb0912e5598e55fe671e99",
+      "git_blob": "193b679a468160fbbd79815634125c46fd6fd403"
+    },
+    {
+      "path": "dflash2/config.json",
+      "size": 1239,
+      "sha256": null,
+      "git_blob": "79279cc5665bced6f3cdaa2095a2ffe819497b2e"
+    },
+    {
+      "path": "dflash2/model.safetensors",
+      "size": 3848817896,
+      "sha256": "67fc76d68dc5a9415511a4f394ef744d67510cd20e93b37cc2cc7d28e4bab65c",
+      "git_blob": "a988e2ea15d5cb6553f37a7f140304fb42fa8c10"
+    },
+    {
+      "path": "dflash2/source.json",
+      "size": 463,
+      "sha256": null,
+      "git_blob": "433d4d61dc425788fb3b2b169938699bf3e8b562"
+    },
+    {
+      "path": "generation_config.json",
+      "size": 214,
+      "sha256": null,
+      "git_blob": "1f489fac1c66a575e119c65483a27147f0aab231"
+    },
+    {
+      "path": "model-00001-of-00012.safetensors",
+      "size": 2542796928,
+      "sha256": "54d83c1d36631de231876217a8e0c2483eccee8746369a482b79442bdfc5d958",
+      "git_blob": "8a7b13137fad8bc802926bb04568324f1a2d2ab0"
+    },
+    {
+      "path": "model-00002-of-00012.safetensors",
+      "size": 4842451920,
+      "sha256": "bb8c3b6c40e4592402200565d96b21bcbd8134ead11b665c16903ebf1b4a0031",
+      "git_blob": "77d8a03bfb6744018f6eb0044d5dda828ae1e9ad"
+    },
+    {
+      "path": "model-00003-of-00012.safetensors",
+      "size": 4965227944,
+      "sha256": "20d21928a7fd5e2bd6c606b1ba2c0fb4fe944a54e50df6884fe6617ee7692597",
+      "git_blob": "b858c3357a42cdc13322f148cf93e699fbddd626"
+    },
+    {
+      "path": "model-00004-of-00012.safetensors",
+      "size": 4912819264,
+      "sha256": "e1d0d7791be44ed640c7e6f97fb6109daed416e41a85c19c1817474ef3d36520",
+      "git_blob": "838922a41b0897876d4a19085f67e4b3ab79b4fd"
+    },
+    {
+      "path": "model-00005-of-00012.safetensors",
+      "size": 4986198544,
+      "sha256": "4f3581c73fcaf1ebaaea94ace19c4af7352bbf41dec0f973f14a1ba41cad7a37",
+      "git_blob": "2b50cec5754a63fae64d012bfaab7e9d0455cd35"
+    },
+    {
+      "path": "model-00006-of-00012.safetensors",
+      "size": 4912819320,
+      "sha256": "5b9f6ffdbc48bb298fa10f63c321f2858cc6069e458f55423a012c90a3dd5150",
+      "git_blob": "652f03ae5d9dbf4bb6f6b3fe55150f432e789746"
+    },
+    {
+      "path": "model-00007-of-00012.safetensors",
+      "size": 4932703272,
+      "sha256": "fa78c1e1e87046f81b895b71c20d1d416dfee8800b95763c83192a62c1265bcb",
+      "git_blob": "7806e208769f52327409e85beb305da34e224875"
+    },
+    {
+      "path": "model-00008-of-00012.safetensors",
+      "size": 4966314576,
+      "sha256": "51d7260aedf191047fd01f330e8605234f663ddbbb1d76679f519b90eb0566bd",
+      "git_blob": "69aefa8f1070cb0456bfef71b019db3fc05e9cd0"
+    },
+    {
+      "path": "model-00009-of-00012.safetensors",
+      "size": 4964162248,
+      "sha256": "05a3a6dfbfe1a86435ea17e0ad36e1318299a8534ced1b4db72617fba6bf1bc8",
+      "git_blob": "7d0875d29b293f1ff461619033b86dc1ee243ce9"
+    },
+    {
+      "path": "model-00010-of-00012.safetensors",
+      "size": 4933789824,
+      "sha256": "e2323c6c2f0872ea180d1cf6082f351fb2d9e245a4e5ed74a325e3239fb68a8e",
+      "git_blob": "4d3d7aa8db14c190119e096b49ef6ec252ea003b"
+    },
+    {
+      "path": "model-00011-of-00012.safetensors",
+      "size": 4965228032,
+      "sha256": "47a57de557f4839dd49dea612727571696a68cc57b8f756db6da98b8b71367be",
+      "git_blob": "2e95443e9fa640c8364dbbb5c8cd07c22dccf1ed"
+    },
+    {
+      "path": "model-00012-of-00012.safetensors",
+      "size": 2789094896,
+      "sha256": "da568dcdb9e75e5cbe8b38fa9b67e38baf149004310107d723ab042857e87d73",
+      "git_blob": "7d43083ff240eabf10b84c3a99f765aee2e5b355"
+    },
+    {
+      "path": "model.safetensors.index.json",
+      "size": 111996,
+      "sha256": null,
+      "git_blob": "800218870ef41e9a54b3889d7e0256230f1ed938"
+    },
+    {
+      "path": "mtp.safetensors",
+      "size": 849400392,
+      "sha256": "1d8268aa85ace093a561e3e7b63b9d390dac1cd55a90cd55b5ec509c3c9da9fe",
+      "git_blob": "7ef4ff42e3c03776b5019767196a98278e02eb86"
+    },
+    {
+      "path": "preprocessor_config.json",
+      "size": 390,
+      "sha256": null,
+      "git_blob": "2ea84a437d448ff71b08df68fdd949d5cc4ebb64"
+    },
+    {
+      "path": "processor_config.json",
+      "size": 1220,
+      "sha256": null,
+      "git_blob": "43c4343ec493f200e452f87a7c6649ecdfcce1ac"
+    },
+    {
+      "path": "tokenizer.json",
+      "size": 19989325,
+      "sha256": "06b9509352d2af50381ab2247e083b80d32d5c0aba91c272ca9ff729b6a0e523",
+      "git_blob": "5520bfd2dd834ce386c1312c410fa71af56db5ad"
+    },
+    {
+      "path": "tokenizer_config.json",
+      "size": 1165,
+      "sha256": null,
+      "git_blob": "1d134cd298be1e3be25db393d93a1cefe80e3214"
+    }
+  ]
+}

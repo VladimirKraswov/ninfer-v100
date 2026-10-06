@@ -241,6 +241,9 @@ void merge_added_tokens_decoder(const Json& root, std::string_view label,
                                 const std::unordered_set<int>& occupied_vocab_ids,
                                 const std::unordered_map<std::string, int>& occupied_vocab_tokens,
                                 std::vector<AddedToken>& tokens) {
+    // Modern exports retain added-token definitions solely in tokenizer.json.
+    // That source was already validated; present config definitions must still agree.
+    if (!root.contains("added_tokens_decoder")) return;
     const Json& decoder = require_object_field(root, "added_tokens_decoder", label);
     std::unordered_map<int, std::size_t> token_by_id;
     std::unordered_map<std::string, int> token_by_content;

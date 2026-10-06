@@ -15,6 +15,8 @@
 #include <stdexcept>
 #include <string>
 #include <utility>
+#include <cstdlib>
+#include <unistd.h>
 
 namespace {
 
@@ -60,7 +62,25 @@ int main(int argc, char** argv) {
             return 1;
         }
 
-        ninfer::serve::GenerationService service(options, startup_log.observer());
+        // An inherited pipe exposes real loader events to the model supervisor. No log parsing,
+        // credentials or transport policy enter the inference runtime.
+        auto observer = startup_log.observer();
+        const char* progress_fd = std::getenv("NINFER_STARTUP_FD");
+        const int fd = progress_fd ? std::atoi(progress_fd) : -1;
+        auto render = observer.callback;
+        observer.callback = [render, fd](const ninfer::StartupEvent& event) {
+            if (render) render(event);
+            if (fd < 3) return;
+            const std::string line = "{\"phase\":" + std::to_string(static_cast<int>(event.phase)) +
+                ",\"status\":" + std::to_string(static_cast<int>(event.status)) +
+                ",\"unit\":" + std::to_string(static_cast<int>(event.progress_unit)) +
+                ",\"current\":" + std::to_string(event.current) +
+                ",\"total\":" + std::to_string(event.total) + "}\n";
+            // Pipe is nonblocking; a slow observer must never stall weight loading.
+            const auto written = ::write(fd, line.data(), line.size());
+            (void)written;
+        };
+        ninfer::serve::GenerationService service(options, observer);
         startup_log.engine_ready(service.load_summary());
         operational_log.engine_capacity(service);
 

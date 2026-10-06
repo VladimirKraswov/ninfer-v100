@@ -51,8 +51,19 @@ Checked the V100 fork's open issues and pull requests on 2026-09-23.
 support; this deployment pins a valid v2 artifact. No open patch there resolved the
 GDN oracle failure reproduced in this campaign.
 
+## Model switching
+
+The optional [single-resident gateway](MODEL-SWITCHING.md) adds explicit unload/load,
+real startup progress and registry-defined allowed agents. Pi BF16 conversion uses
+its own pinned checkpoint through the existing groupwise recipe. Both load directions,
+reasoning, tools, vision and long context were qualified on V100 before enabling the
+gateway. Existing Huihui weights are unchanged; the original service is retained for
+rollback. See [model-service qualification](results/2026-10-06/README.md).
+
 ## Installation
 
+The active service is `ninfer-model-gateway.service`; `ninfer-v100.service` below is
+the retained legacy deployment example, not a second running GPU process.
 `ninfer-v100.service` records this deployment's paths/address/user. Adjust those three
 for another machine. Build with CUDA 12.9, sm_70, and benchmarks disabled; the engine
 and tests are enabled. Model artifact is v2 from the pinned Hugging Face revision
